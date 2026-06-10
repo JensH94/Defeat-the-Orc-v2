@@ -28,7 +28,12 @@ def get_data(connection, tabelle):
     return rows
 
 
+def disconnect(connection):
+    if connection.is_connected():
+        connection.close()
+
+
 connection = verbinden()
 classes_data = get_data(connection, "classes")
-disconnect = connection.close()
 print(classes_data)
+disconnect(connection)
