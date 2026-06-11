@@ -31,6 +31,7 @@ def get_data(connection, tabelle):
 def disconnect(connection):
     if connection.is_connected():
         connection.close()
+        print("Verbindung getrennt")
 
 
 connection = verbinden()
