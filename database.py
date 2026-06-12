@@ -32,9 +32,3 @@ def disconnect(connection):
     if connection.is_connected():
         connection.close()
         print("Verbindung getrennt")
-
-
-connection = verbinden()
-classes_data = get_data(connection, "classes")
-print(classes_data)
-disconnect(connection)
