@@ -8,3 +8,73 @@ class Entity:
 
     def __repr__(self) -> str:
         return f"Entity ({self.name} | HP: {self.base_health} | Mana: {self.base_mana} | Initiative: {self.base_initiative})"
+
+
+class Item:
+
+    def __init__(self, daten: dict):
+        self.name: str = daten.get("name", "unbekannt")
+        self.min_damage: int = daten.get("min_damage", 0)
+        self.max_damage: int = daten.get("max_damage", 0)
+        self.min_heal: int = daten.get("min_heal", 0)
+        self.max_heal: int = daten.get("max_heal", 0)
+
+    def __repr__(self):
+        return f"Item ({self.name} | min damage: {self.min_damage} | max damage:{self.max_damage} | min heal:{self.min_heal} | max heal:{self.max_heal})"
+
+
+class Weapon:
+
+    def __init__(self, daten: dict):
+        self.name: str = daten.get("name", "unbekannt")
+        self.min_damage: int = daten.get("min_damage", 0)
+        self.max_damage: int = daten.get("max_damage", 0)
+        self.crit_chance: int = daten.get("crit_chance", 0)
+        self.hit_chance: int = daten.get("hit_chance", 0)
+
+    def __repr__(self):
+        return f"Weapon ({self.name} | min damage:{self.min_damage} | max damage:{self.max_damage} | crit chance:{self.crit_chance} | hit chance:{self.hit_chance})"
+
+
+class Armor:
+
+    def __init__(self, daten: dict):
+        self.name: str = daten.get("name", "unbekannt")
+        self.defense: int = daten.get("defense", 0)
+
+    def __repr__(self):
+        return f"Armor ({self.name} | Defense:{self.defense})"
+
+
+class Effect:
+
+    def __init__(self, daten: dict):
+        self.name: str = daten.get("name", "unbekannt")
+        self.min_damage: int = daten.get("min_damage", 0)
+        self.max_damage: int = daten.get("max_damage", 0)
+
+    def __repr__(self):
+        return f"Effect ({self.name} | min damage:{self.min_damage} | max damage:{self.max_damage})"
+
+
+class Skill:
+
+    def __init__(self, daten: dict):
+        self.name: str = daten.get("name", "unbekannt")
+        self.min_damage: int = daten.get("min_damage", 0)
+        self.max_damage: int = daten.get("max_damage", 0)
+
+    def __repr__(self):
+        return f"Skill ({self.name} | min damage:{self.min_damage} | max damage:{self.max_damage})"
+
+
+class Spell:
+
+    def __init__(self, daten: dict):
+        self.name: str = daten.get("name", "unbekannt")
+        self.min_damage: int = daten.get("min_damage", 0)
+        self.max_damage: int = daten.get("max_damage", 0)
+        self.mana_cost: int = daten.get("mana_cost", 0)
+
+    def __repr__(self):
+        return f"Spell ({self.name} | min damage:{self.min_damage} | max damage:{self.max_damage} | mana cost:{self.mana_cost})"
