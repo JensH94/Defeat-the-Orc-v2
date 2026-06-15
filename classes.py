@@ -1,6 +1,7 @@
 class Entity:
 
     def __init__(self, daten: dict):
+        self.entity_id: int = daten.get("entity_id", 0)
         self.name: str = daten.get("name", "Unbekannt")
         self.base_health: int = daten.get("base_health", 0)
         self.base_mana: int = daten.get("base_mana", 0)
@@ -13,6 +14,7 @@ class Entity:
 class Item:
 
     def __init__(self, daten: dict):
+        self.item_id: int = daten.get("item_id", 0)
         self.name: str = daten.get("name", "unbekannt")
         self.min_damage: int = daten.get("min_damage", 0)
         self.max_damage: int = daten.get("max_damage", 0)
@@ -26,6 +28,7 @@ class Item:
 class Weapon:
 
     def __init__(self, daten: dict):
+        self.weapon_id: int = daten.get("weapon_id", 0)
         self.name: str = daten.get("name", "unbekannt")
         self.min_damage: int = daten.get("min_damage", 0)
         self.max_damage: int = daten.get("max_damage", 0)
@@ -39,6 +42,7 @@ class Weapon:
 class Armor:
 
     def __init__(self, daten: dict):
+        self.armor_id: int = daten.get("armor_id", 0)
         self.name: str = daten.get("name", "unbekannt")
         self.defense: int = daten.get("defense", 0)
 
@@ -49,6 +53,7 @@ class Armor:
 class Effect:
 
     def __init__(self, daten: dict):
+        self.effect_id: int = daten.get("effect_id", 0)
         self.name: str = daten.get("name", "unbekannt")
         self.min_damage: int = daten.get("min_damage", 0)
         self.max_damage: int = daten.get("max_damage", 0)
@@ -60,6 +65,7 @@ class Effect:
 class Skill:
 
     def __init__(self, daten: dict):
+        self.skill_id: int = daten.get("skill_id", 0)
         self.name: str = daten.get("name", "unbekannt")
         self.min_damage: int = daten.get("min_damage", 0)
         self.max_damage: int = daten.get("max_damage", 0)
@@ -71,6 +77,7 @@ class Skill:
 class Spell:
 
     def __init__(self, daten: dict):
+        self.spell_id: int = daten.get("spell_id", 0)
         self.name: str = daten.get("name", "unbekannt")
         self.min_damage: int = daten.get("min_damage", 0)
         self.max_damage: int = daten.get("max_damage", 0)
