@@ -85,8 +85,8 @@ def load_all(connection):
         "weapons": weapons,
         "armor": armor,
         "effects": effects,
-        "skils": skills,
-        "spelles": spells,
+        "skills": skills,
+        "spells": spells,
     }
     return data_all
 
