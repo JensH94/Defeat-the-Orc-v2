@@ -2,20 +2,25 @@ import random
 from classes import Entity
 
 
+def key_base_init(e):
+    return e.base_initiative
+
+
 class Fight:
     def __init__(self, player_group, enemy_group):
         self.player_group: list = player_group
         self.enemy_group: list = enemy_group
         self.turn_order: list[Entity] = []
         self.rounds: int = 1
+        self.initiative_list()
 
     def __repr__(self) -> str:
-        return f"Player Group : {self.player_group} | Enemy Group : {self.enemy_group} | Initiative : {self.initiative} | Rounds : {self.rounds}"
+        return f"Player Group : {self.player_group} | Enemy Group : {self.enemy_group} | Turn Order : {self.turn_order} | Rounds : {self.rounds}"
 
     def initiative_list(self):
         init_list = self.player_group + self.enemy_group
-        init_list["self.base_initiative"].sort(reverse=True)
-        return init_list
+        random.shuffle(init_list)
+        self.turn_order = sorted(init_list, key=key_base_init, reverse=True)
 
 
 def test_fight(character_classes, enemies):
