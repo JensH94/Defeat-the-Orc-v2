@@ -15,7 +15,7 @@ class Fight:
         self.initiative_list()
 
     def __repr__(self) -> str:
-        return f"Player Group : {self.player_group} | Enemy Group : {self.enemy_group} | Turn Order : {self.turn_order} | Rounds : {self.rounds}"
+        return f"\n| Player Group : {self.player_group} \n| Enemy Group : {self.enemy_group} \n| Turn Order : {self.turn_order} \n| Rounds : {self.rounds}"
 
     def initiative_list(self):
         init_list = self.player_group + self.enemy_group
