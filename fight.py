@@ -17,10 +17,13 @@ class Fight:
     def __repr__(self) -> str:
         return f"\n| Player Group : {self.player_group} \n| Enemy Group : {self.enemy_group} \n| Turn Order : {self.turn_order} \n| Rounds : {self.rounds}"
 
-    def initiative_list(self):
+    def initiative_list(self) -> dict:
         init_list = self.player_group + self.enemy_group
         random.shuffle(init_list)
         self.turn_order = sorted(init_list, key=key_base_init, reverse=True)
+
+    def health_check(self, entity_group) -> bool:
+        return any(entity.current_health > 0 for entity in entity_group)
 
 
 def test_fight(character_classes, enemies):
