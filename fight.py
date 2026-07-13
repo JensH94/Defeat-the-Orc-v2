@@ -25,6 +25,20 @@ class Fight:
     def health_check(self, entity_group) -> bool:
         return any(entity.current_health > 0 for entity in entity_group)
 
+    def fight_loop(self):
+        while self.health_check(self.player_group) and self.health_check(
+            self.enemy_group
+        ):
+            for entity in self.turn_order:
+                if entity.current_health <= 0:
+                    continue
+                if entity in self.player_group:
+                    target_group = self.enemy_group
+                else:
+                    target_group = self.player_group
+                print(target_group)
+            self.rounds += 1
+
 
 def test_fight(character_classes, enemies):
 

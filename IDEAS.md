@@ -42,7 +42,7 @@ UI-System mit Tooltips:
 Bibliothek wählen (pygame / textual / arcade)
 Inventar-Fenster mit Hover-Tooltips
 Stat-Tooltips mit Beschreibung + Kategorie
-Maus-Auswahl statt Eingabe-Nummern
+Maus-Auswahl statt Eingabe-Nummern (beides soll Funktionieren!)
 
 
 

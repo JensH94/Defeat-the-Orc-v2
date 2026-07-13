@@ -4,8 +4,11 @@ class Entity:
         self.entity_id: int = daten.get("entity_id", 0)
         self.name: str = daten.get("name", "Unbekannt")
         self.base_health: int = daten.get("base_health", 0)
+        self.current_health: int = self.base_health
         self.base_mana: int = daten.get("base_mana", 0)
+        self.current_mana: int = self.base_mana
         self.base_initiative: int = daten.get("base_initiative", 0)
+        self.current_initiative: int = self.base_initiative
 
     def __repr__(self) -> str:
         return f"Entity ({self.name} | HP: {self.base_health} | Mana: {self.base_mana} | Initiative: {self.base_initiative})"

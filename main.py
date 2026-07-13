@@ -10,5 +10,9 @@ disconnect(connection)
 
 player_data, enemy_data = test_fight(every_data["classes"], every_data["enemies"])
 
-print(Fight(player_data, enemy_data))
+fight_start = Fight(player_data, enemy_data)
+
+fight_start.fight_loop()
+
+""" print(Fight(player_data, enemy_data)) """
 """ print(every_data) """

@@ -89,13 +89,3 @@ def load_all(connection):
         "spells": spells,
     }
     return data_all
-
-
-""" print(character_classes)
-print(enemies)
-print(items)
-print(weapons)
-print(armor)
-print(effects)
-print(skills)
-print(spells) """
