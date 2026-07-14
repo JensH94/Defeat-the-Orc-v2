@@ -25,6 +25,20 @@ class Fight:
     def health_check(self, entity_group) -> bool:
         return any(entity.current_health > 0 for entity in entity_group)
 
+    def target_choice(self, entity_group) -> Entity:
+        target_group = []
+        for e in entity_group:
+            if e.current_health > 0:
+                target_group.append(e)
+        for i, e in enumerate(target_group, start=1):
+            print(f"\n{i} - {e.name}\n")
+        target_number = int(input("Choose a Target\n"))
+        target = target_group[target_number - 1]
+        return target
+
+    def dmg_calculation(self, min_damage, max_damage) -> int:
+        return random.randint(min_damage, max_damage)
+
     def fight_loop(self):
         while self.health_check(self.player_group) and self.health_check(
             self.enemy_group
@@ -36,8 +50,17 @@ class Fight:
                     target_group = self.enemy_group
                 else:
                     target_group = self.player_group
-                print(target_group)
+                target = self.target_choice(target_group)
+                damage = self.dmg_calculation(
+                    entity.unarmed_min_damage, entity.unarmed_max_damage
+                )
+                target.current_health -= damage
+                print(f"{entity.name} attacks {target.name} for {damage} !")
+
+            print(f"\nRunde:{self.rounds}")
             self.rounds += 1
+        for e in self.turn_order:
+            print(f" Name:{e.name} HP:{e.current_health}\n")
 
 
 def test_fight(character_classes, enemies):

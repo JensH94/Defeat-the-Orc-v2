@@ -9,6 +9,12 @@ class Entity:
         self.current_mana: int = self.base_mana
         self.base_initiative: int = daten.get("base_initiative", 0)
         self.current_initiative: int = self.base_initiative
+        self.unarmed_min_damage: int = daten.get("unarmed_min_damage", 1)
+        self.unarmed_max_damage: int = daten.get("unarmed_max_damage", 3)
+        self.base_crit_chance: float = daten.get("base_crit_chance", 0.01)
+        self.current_crit_chance: float = self.base_crit_chance
+        self.base_hit_chance: float = daten.get("base_hit_chance", 0.97)
+        self.current_hit_chance: float = self.base_hit_chance
 
     def __repr__(self) -> str:
         return f"Entity ({self.name} | HP: {self.base_health} | Mana: {self.base_mana} | Initiative: {self.base_initiative})"
@@ -35,8 +41,8 @@ class Weapon:
         self.name: str = daten.get("name", "unbekannt")
         self.min_damage: int = daten.get("min_damage", 0)
         self.max_damage: int = daten.get("max_damage", 0)
-        self.crit_chance: int = daten.get("crit_chance", 0)
-        self.hit_chance: int = daten.get("hit_chance", 0)
+        self.crit_chance: float = daten.get("crit_chance", 0.0)
+        self.hit_chance: float = daten.get("hit_chance", 0.0)
 
     def __repr__(self):
         return f"Weapon ({self.name} | min damage:{self.min_damage} | max damage:{self.max_damage} | crit chance:{self.crit_chance} | hit chance:{self.hit_chance})"
