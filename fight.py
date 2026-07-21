@@ -1,6 +1,5 @@
 import random
 from classes import Entity
-import time
 from print_style import slow_print, slow_input
 
 
@@ -28,12 +27,14 @@ class Fight:
         return any(entity.current_health > 0 for entity in entity_group)
 
     def target_choice(self, entity_group) -> Entity:
+
         target_group = []
         for e in entity_group:
             if e.current_health > 0:
                 target_group.append(e)
         for i, e in enumerate(target_group, start=1):
             slow_print(f"-- Available Targets--\n{i} - {e.name}")
+
         target_number = int(slow_input("Choose a Target\n"))
         target = target_group[target_number - 1]
         return target
@@ -43,9 +44,9 @@ class Fight:
 
     def fight_loop(self):
 
-        slow_print(
-            f"\nFight between {self.player_group} and {self.enemy_group} begins!"
-        )
+        player_names = ",".join(e.name for e in self.player_group)
+        enemy_names = ",".join(e.name for e in self.enemy_group)
+        slow_print(f"Fight between {player_names} and {enemy_names} !")
 
         while self.health_check(self.player_group) and self.health_check(
             self.enemy_group
@@ -60,6 +61,9 @@ class Fight:
                     target_group = self.enemy_group
                 else:
                     target_group = self.player_group
+
+                slow_print(f"{entity.name}s turn: ")
+
                 target = self.target_choice(target_group)
                 damage = self.dmg_calculation(
                     entity.unarmed_min_damage, entity.unarmed_max_damage
@@ -67,6 +71,8 @@ class Fight:
                 target.current_health -= damage
 
                 slow_print(f"{entity.name} attacks {target.name} for {damage} !")
+
+            slow_print("Current Health:")
 
             for e in self.turn_order:
                 slow_print(f"\nName:{e.name} HP:{e.current_health}")

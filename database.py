@@ -1,15 +1,19 @@
 import mysql.connector
 from mysql.connector import Error
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 
 def verbinden():
     try:
         connection = mysql.connector.connect(
-            host="localhost",
-            user="root",
-            port=3306,
-            password="",
-            database="defeat_the_orc",
+            host=os.getenv("DB_HOST"),
+            user=os.getenv("DB_USER"),
+            password=os.getenv("DB_PASSWORD"),
+            port=int(os.getenv("DB_PORT")),
+            database=os.getenv("DB_NAME"),
         )
 
         if connection.is_connected():
