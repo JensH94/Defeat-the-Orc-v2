@@ -45,3 +45,4 @@ Ideas:
 - Permadeath-Modus
 - Licht-System (Fackel, magische Items)
 - Grafik und Musik (itch.io, OpenGameArt.org)
+- Public Showcase Repo (Gezielte Versionskontrolle für Öffentliches Repo)
