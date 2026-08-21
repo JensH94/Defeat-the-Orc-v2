@@ -23,16 +23,15 @@ M2(MVP):
 
 M3:
 
-- Spieler Hub bauen
-- Tod als folge von verlorenen Kampf (in Hub respawnen)
-- Zeitsystem Grundgerüst bauen
+- Items und Inventar
+- Lootsystem Grundgerüst
 
 
 M4:
-
-- Items und Inventar
-- Lootsystem Grundgerüst
+- Spieler Hub bauen
 - Erste NPCs (Schmied, Händler)
+- Tod als folge von verlorenen Kampf (in Hub respawnen)
+- Zeitsystem Grundgerüst bauen
 - Spielfortschritt Speichern
 
 M5:
@@ -49,3 +48,5 @@ M6:
 - Visuelle Hilfsmittel
 - Interface
 - Boss Design/Mechanics
+- Wetter Mechanic
+- Skills/Spells ausarbeiten

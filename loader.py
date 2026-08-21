@@ -1,4 +1,4 @@
-from classes import Entity, Item, Weapon, Armor, Effect, Skill, Spell
+from classes import Entity, Item, Weapon, Armor, Effects, Skill, Spell
 from database import get_data
 
 
@@ -40,7 +40,7 @@ def build_armor(armor_data):
 def build_effects(effects_data):
     effects = []
     for zeile in effects_data:
-        effects.append(Effect(zeile))
+        effects.append(Effects(zeile))
     return effects
 
 

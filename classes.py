@@ -1,3 +1,5 @@
+import random
+
 class Entity:
 
     def __init__(self, daten: dict):
@@ -15,6 +17,14 @@ class Entity:
         self.current_crit_chance: float = self.base_crit_chance
         self.base_hit_chance: float = daten.get("base_hit_chance", 0.97)
         self.current_hit_chance: float = self.base_hit_chance
+        self.entity_effects: list = []
+
+
+    def entity_effects_order(self):
+        for effects in self.entity_effects:
+            effects.apply(self)
+            effects.duration -= 1
+        self.entity_effects = [effects for effects in self.entity_effects if effects.duration > 0]
 
     def __repr__(self) -> str:
         return f"Entity ({self.name} | HP: {self.base_health} | Mana: {self.base_mana} | Initiative: {self.base_initiative})"
@@ -59,13 +69,22 @@ class Armor:
         return f"Armor ({self.name} | Defense:{self.defense})"
 
 
-class Effect:
+class Effects:
 
     def __init__(self, daten: dict):
-        self.effect_id: int = daten.get("effect_id", 0)
+        self.effects_id: int = daten.get("effects_id", 0)
         self.name: str = daten.get("name", "unbekannt")
         self.min_damage: int = daten.get("min_damage", 0)
         self.max_damage: int = daten.get("max_damage", 0)
+        self.effects_target = "current_health"
+        self.effects_duration: int = daten.get("duration", 0)
+
+    def effects_apply(self, target):
+        effects_dmg: int = random.randint(self.min_damage, self.max_damage)
+        target.current_health -= effects_dmg
+        return effects_dmg
+    
+
 
     def __repr__(self):
         return f"Effect ({self.name} | min damage:{self.min_damage} | max damage:{self.max_damage})"
