@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Erstellungszeit: 21. Jul 2026 um 18:59
+-- Erstellungszeit: 24. Aug 2026 um 21:17
 -- Server-Version: 10.4.32-MariaDB
 -- PHP-Version: 8.2.12
 
@@ -30,12 +30,11 @@ USE `defeat_the_orc`;
 --
 
 DROP TABLE IF EXISTS `armor`;
-CREATE TABLE IF NOT EXISTS `armor` (
-  `armor_id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `armor` (
+  `armor_id` int(11) NOT NULL,
   `name` varchar(50) DEFAULT NULL,
-  `defense` int(11) DEFAULT NULL,
-  PRIMARY KEY (`armor_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `defense` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Daten für Tabelle `armor`
@@ -52,14 +51,13 @@ INSERT INTO `armor` (`armor_id`, `name`, `defense`) VALUES
 --
 
 DROP TABLE IF EXISTS `classes`;
-CREATE TABLE IF NOT EXISTS `classes` (
-  `class_id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `classes` (
+  `class_id` int(11) NOT NULL,
   `name` varchar(50) DEFAULT NULL,
   `base_health` int(11) DEFAULT NULL,
   `base_mana` int(11) DEFAULT NULL,
-  `base_initiative` int(11) DEFAULT NULL,
-  PRIMARY KEY (`class_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `base_initiative` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Daten für Tabelle `classes`
@@ -76,21 +74,21 @@ INSERT INTO `classes` (`class_id`, `name`, `base_health`, `base_mana`, `base_ini
 --
 
 DROP TABLE IF EXISTS `effects`;
-CREATE TABLE IF NOT EXISTS `effects` (
-  `effects_id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `effects` (
+  `effects_id` int(11) NOT NULL,
   `name` varchar(50) DEFAULT NULL,
   `min_damage` int(11) DEFAULT NULL,
   `max_damage` int(11) DEFAULT NULL,
-  PRIMARY KEY (`effects_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `duration` int(11) DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Daten für Tabelle `effects`
 --
 
-INSERT INTO `effects` (`effects_id`, `name`, `min_damage`, `max_damage`) VALUES
-(1, 'Fire', 2, 4),
-(2, 'Bleed', 1, 5);
+INSERT INTO `effects` (`effects_id`, `name`, `min_damage`, `max_damage`, `duration`) VALUES
+(1, 'Fire', 2, 4, 3),
+(2, 'Bleed', 1, 5, 4);
 
 -- --------------------------------------------------------
 
@@ -99,14 +97,13 @@ INSERT INTO `effects` (`effects_id`, `name`, `min_damage`, `max_damage`) VALUES
 --
 
 DROP TABLE IF EXISTS `enemies`;
-CREATE TABLE IF NOT EXISTS `enemies` (
-  `enemy_id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `enemies` (
+  `enemy_id` int(11) NOT NULL,
   `name` varchar(50) DEFAULT NULL,
   `base_health` int(11) DEFAULT NULL,
   `base_mana` int(11) DEFAULT NULL,
-  `base_initiative` int(11) DEFAULT NULL,
-  PRIMARY KEY (`enemy_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `base_initiative` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Daten für Tabelle `enemies`
@@ -123,15 +120,14 @@ INSERT INTO `enemies` (`enemy_id`, `name`, `base_health`, `base_mana`, `base_ini
 --
 
 DROP TABLE IF EXISTS `items`;
-CREATE TABLE IF NOT EXISTS `items` (
-  `item_id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `items` (
+  `item_id` int(11) NOT NULL,
   `name` varchar(50) DEFAULT NULL,
   `min_damage` int(11) DEFAULT NULL,
   `max_damage` int(11) DEFAULT NULL,
   `min_heal` int(11) DEFAULT NULL,
-  `max_heal` int(11) DEFAULT NULL,
-  PRIMARY KEY (`item_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `max_heal` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Daten für Tabelle `items`
@@ -148,13 +144,12 @@ INSERT INTO `items` (`item_id`, `name`, `min_damage`, `max_damage`, `min_heal`, 
 --
 
 DROP TABLE IF EXISTS `skills`;
-CREATE TABLE IF NOT EXISTS `skills` (
-  `skill_id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `skills` (
+  `skill_id` int(11) NOT NULL,
   `name` varchar(50) DEFAULT NULL,
   `min_damage` int(11) DEFAULT NULL,
-  `max_damage` int(11) DEFAULT NULL,
-  PRIMARY KEY (`skill_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `max_damage` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Daten für Tabelle `skills`
@@ -170,14 +165,13 @@ INSERT INTO `skills` (`skill_id`, `name`, `min_damage`, `max_damage`) VALUES
 --
 
 DROP TABLE IF EXISTS `spells`;
-CREATE TABLE IF NOT EXISTS `spells` (
-  `spell_id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `spells` (
+  `spell_id` int(11) NOT NULL,
   `name` varchar(50) DEFAULT NULL,
   `min_damage` int(11) DEFAULT NULL,
   `max_damage` int(11) DEFAULT NULL,
-  `mana_cost` int(11) DEFAULT NULL,
-  PRIMARY KEY (`spell_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `mana_cost` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Daten für Tabelle `spells`
@@ -193,15 +187,14 @@ INSERT INTO `spells` (`spell_id`, `name`, `min_damage`, `max_damage`, `mana_cost
 --
 
 DROP TABLE IF EXISTS `weapons`;
-CREATE TABLE IF NOT EXISTS `weapons` (
-  `weapon_id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `weapons` (
+  `weapon_id` int(11) NOT NULL,
   `name` varchar(50) DEFAULT NULL,
   `min_damage` int(11) DEFAULT NULL,
   `max_damage` int(11) DEFAULT NULL,
   `crit_chance` int(11) DEFAULT NULL,
-  `hit_chance` int(11) DEFAULT NULL,
-  PRIMARY KEY (`weapon_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `hit_chance` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Daten für Tabelle `weapons`
@@ -210,6 +203,110 @@ CREATE TABLE IF NOT EXISTS `weapons` (
 INSERT INTO `weapons` (`weapon_id`, `name`, `min_damage`, `max_damage`, `crit_chance`, `hit_chance`) VALUES
 (1, 'Axe', 3, 10, 0, 0),
 (2, 'Staff', 1, 6, 0, 0);
+
+--
+-- Indizes der exportierten Tabellen
+--
+
+--
+-- Indizes für die Tabelle `armor`
+--
+ALTER TABLE `armor`
+  ADD PRIMARY KEY (`armor_id`);
+
+--
+-- Indizes für die Tabelle `classes`
+--
+ALTER TABLE `classes`
+  ADD PRIMARY KEY (`class_id`);
+
+--
+-- Indizes für die Tabelle `effects`
+--
+ALTER TABLE `effects`
+  ADD PRIMARY KEY (`effects_id`);
+
+--
+-- Indizes für die Tabelle `enemies`
+--
+ALTER TABLE `enemies`
+  ADD PRIMARY KEY (`enemy_id`);
+
+--
+-- Indizes für die Tabelle `items`
+--
+ALTER TABLE `items`
+  ADD PRIMARY KEY (`item_id`);
+
+--
+-- Indizes für die Tabelle `skills`
+--
+ALTER TABLE `skills`
+  ADD PRIMARY KEY (`skill_id`);
+
+--
+-- Indizes für die Tabelle `spells`
+--
+ALTER TABLE `spells`
+  ADD PRIMARY KEY (`spell_id`);
+
+--
+-- Indizes für die Tabelle `weapons`
+--
+ALTER TABLE `weapons`
+  ADD PRIMARY KEY (`weapon_id`);
+
+--
+-- AUTO_INCREMENT für exportierte Tabellen
+--
+
+--
+-- AUTO_INCREMENT für Tabelle `armor`
+--
+ALTER TABLE `armor`
+  MODIFY `armor_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT für Tabelle `classes`
+--
+ALTER TABLE `classes`
+  MODIFY `class_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT für Tabelle `effects`
+--
+ALTER TABLE `effects`
+  MODIFY `effects_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT für Tabelle `enemies`
+--
+ALTER TABLE `enemies`
+  MODIFY `enemy_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT für Tabelle `items`
+--
+ALTER TABLE `items`
+  MODIFY `item_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT für Tabelle `skills`
+--
+ALTER TABLE `skills`
+  MODIFY `skill_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT für Tabelle `spells`
+--
+ALTER TABLE `spells`
+  MODIFY `spell_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT für Tabelle `weapons`
+--
+ALTER TABLE `weapons`
+  MODIFY `weapon_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
