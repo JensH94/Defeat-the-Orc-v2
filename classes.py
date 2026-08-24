@@ -21,9 +21,9 @@ class Entity:
 
 
     def entity_effects_order(self):
-        for effects in self.entity_effects:
-            effects.apply(self)
-            effects.duration -= 1
+        for effect in self.entity_effects:
+            effect.apply(self)
+            effect.duration -= 1
         self.entity_effects = [effects for effects in self.entity_effects if effects.duration > 0]
 
     def __repr__(self) -> str:
