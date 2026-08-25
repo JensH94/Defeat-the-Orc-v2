@@ -23,14 +23,17 @@ class Fight:
         random.shuffle(init_list)
         self.turn_order = sorted(init_list, key=key_base_init, reverse=True)
 
-    def health_check(self, entity_group) -> bool:
-        return any(entity.current_health > 0 for entity in entity_group)
+    def health_check(self, entity_group):
+        return any(entity.is_alive() for entity in entity_group)
+
+    def announce_death(self, entity):
+        slow_print(f"{entity.name} died")
 
     def player_choice(self, entity_group) -> Entity:
 
         target_group = []
         for entity in entity_group:
-            if entity.current_health > 0:
+            if entity.is_alive():
                 target_group.append(entity)
 
         while True:
@@ -58,7 +61,7 @@ class Fight:
 
         target_group = []
         for entity in entity_group:
-            if entity.current_health > 0:
+            if entity.is_alive():
                 target_group.append(entity)
         attack_target = random.choice(target_group)
         return attack_target
@@ -79,7 +82,7 @@ class Fight:
             slow_print(f"\n------ Round: {self.rounds} ------")
 
             for entity in self.turn_order:
-                if entity.current_health <= 0:
+                if not entity.is_alive():
                     continue
                 slow_print(f"{entity.name}s turn: ")
                 if entity in self.player_group:
@@ -92,10 +95,10 @@ class Fight:
                 damage = self.dmg_calculation(
                     entity.unarmed_min_damage, entity.unarmed_max_damage
                 )
-                target.current_health -= damage
+                target.current_health = max(0, target.current_health - damage)
                 slow_print(f"{entity.name} attacks {target.name} for {damage} !")
-                if target.current_health <= 0:
-                    slow_print(f"{target.name} died")
+                if not target.is_alive():
+                    self.announce_death(target)
 
                 if not (
                     self.health_check(self.player_group)
@@ -103,10 +106,19 @@ class Fight:
                 ):
                     break
 
+            for entity in self.turn_order:
+                if entity.is_alive():
+                    for effects_name, tick_damage in entity.tick_effects():
+                        slow_print(
+                            f"\n{entity.name} takes {tick_damage} from {effects_name}"
+                        )
+                if not entity.is_alive():
+                    self.announce_death(entity)
+
             slow_print("Current Health:")
 
             for entity in self.turn_order:
-                slow_print(f"\nName:{entity.name} HP:{entity.current_health}")
+                slow_print(f"Name:{entity.name} HP:{entity.current_health}")
 
             self.rounds += 1
 

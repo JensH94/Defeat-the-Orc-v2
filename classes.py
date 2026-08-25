@@ -1,5 +1,6 @@
 import random
 
+
 class Entity:
 
     def __init__(self, daten: dict):
@@ -19,12 +20,17 @@ class Entity:
         self.current_hit_chance: float = self.base_hit_chance
         self.entity_effects: list = []
 
+    def tick_effects(self):
+        effects_events = []
+        for effects in self.entity_effects:
+            tick_damage = effects.effects_apply(self)
+            effects_events.append((effects.name, tick_damage))
+            effects.effects_duration -= 1
+        self.entity_effects = [e for e in self.entity_effects if e.effects_duration > 0]
+        return effects_events
 
-    def entity_effects_order(self):
-        for effect in self.entity_effects:
-            effect.apply(self)
-            effect.duration -= 1
-        self.entity_effects = [effects for effects in self.entity_effects if effects.duration > 0]
+    def is_alive(self):
+        return self.current_health > 0
 
     def __repr__(self) -> str:
         return f"Entity ({self.name} | HP: {self.base_health} | Mana: {self.base_mana} | Initiative: {self.base_initiative})"
@@ -81,10 +87,8 @@ class Effects:
 
     def effects_apply(self, target):
         effects_dmg: int = random.randint(self.min_damage, self.max_damage)
-        target.current_health -= effects_dmg
+        target.current_health = max(0, target.current_health - effects_dmg)
         return effects_dmg
-    
-
 
     def __repr__(self):
         return f"Effect ({self.name} | min damage:{self.min_damage} | max damage:{self.max_damage})"
