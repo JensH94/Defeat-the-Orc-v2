@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Erstellungszeit: 24. Aug 2026 um 21:17
+-- Erstellungszeit: 26. Aug 2026 um 12:07
 -- Server-Version: 10.4.32-MariaDB
 -- PHP-Version: 8.2.12
 
@@ -55,17 +55,19 @@ CREATE TABLE `classes` (
   `class_id` int(11) NOT NULL,
   `name` varchar(50) DEFAULT NULL,
   `base_health` int(11) DEFAULT NULL,
-  `base_mana` int(11) DEFAULT NULL,
-  `base_initiative` int(11) DEFAULT NULL
+  `base_initiative` int(11) DEFAULT NULL,
+  `base_resource` int(11) DEFAULT NULL,
+  `resource_type` varchar(30) DEFAULT NULL,
+  `max_resource` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Daten für Tabelle `classes`
 --
 
-INSERT INTO `classes` (`class_id`, `name`, `base_health`, `base_mana`, `base_initiative`) VALUES
-(1, 'Mage', 20, 40, 15),
-(2, 'Barbarian', 30, 0, 13);
+INSERT INTO `classes` (`class_id`, `name`, `base_health`, `base_initiative`, `base_resource`, `resource_type`, `max_resource`) VALUES
+(1, 'Mage', 20, 15, 100, 'mana', 100),
+(2, 'Barbarian', 30, 13, 0, 'rage', 100);
 
 -- --------------------------------------------------------
 
