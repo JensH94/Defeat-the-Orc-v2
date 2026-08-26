@@ -1,11 +1,17 @@
 from classes import Entity, Item, Weapon, Armor, Effects, Skill, Spell
-from database import get_data
+from database import get_data, get_skills_for_classes, get_spells_for_classes
 
 
-def build_classes(classes_data):
+def build_classes(classes_data, connection):
     character_classes = []
     for zeile in classes_data:
-        character_classes.append(Entity(zeile))
+        entity = Entity(zeile)
+        entity.entity_id = zeile["class_id"]
+        skills_data = get_skills_for_classes(connection, entity.entity_id)
+        spells_data = get_spells_for_classes(connection, entity.entity_id)
+        entity.entity_skills = build_skills(skills_data)
+        entity.entity_spells = build_spells(spells_data)
+        character_classes.append(entity)
     return character_classes
 
 
@@ -69,7 +75,7 @@ def load_all(connection):
     skills_data = get_data(connection, "skills")
     spells_data = get_data(connection, "spells")
 
-    character_classes = build_classes(classes_data)
+    character_classes = build_classes(classes_data, connection)
     enemies = build_enemies(enemies_data)
     items = build_items(items_data)
     weapons = build_weapons(weapons_data)

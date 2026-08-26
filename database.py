@@ -32,6 +32,30 @@ def get_data(connection, tabelle):
     return rows
 
 
+def get_skills_for_classes(connection, class_id):
+    cursor = connection.cursor(dictionary=True)
+    query = """
+        SELECT skills.*
+        FROM class_skills
+        JOIN skills ON class_skills.skill_id = skills.skill_id
+        WHERE class_skills.class_id = %s
+        """
+    cursor.execute(query, (class_id,))
+    return cursor.fetchall()
+
+
+def get_spells_for_classes(connection, class_id):
+    cursor = connection.cursor(dictionary=True)
+    query = """
+        SELECT spells.*
+        FROM class_spells
+        JOIN spells ON class_spells.spell_id = spells.spell_id
+        WHERE class_spells.class_id = %s
+        """
+    cursor.execute(query, (class_id,))
+    return cursor.fetchall()
+
+
 def disconnect(connection):
     if connection.is_connected():
         connection.close()

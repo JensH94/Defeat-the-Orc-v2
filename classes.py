@@ -1,10 +1,11 @@
 import random
+from print_style import slow_print
 
 
 class Entity:
 
     def __init__(self, daten: dict):
-        self.entity_id: int = daten.get("entity_id", 0)
+        self.entity_id: int = 0
         self.name: str = daten.get("name", "Unbekannt")
         self.base_health: int = daten.get("base_health", 0)
         self.current_health: int = self.base_health
@@ -21,6 +22,8 @@ class Entity:
         self.base_hit_chance: float = daten.get("base_hit_chance", 0.97)
         self.current_hit_chance: float = self.base_hit_chance
         self.entity_effects: list = []
+        self.entity_spells: list = []
+        self.entity_skills: list = []
         self.death_reported: bool = False
 
     def tick_effects(self):
@@ -37,6 +40,13 @@ class Entity:
             self.current_resource = min(
                 self.max_resource, self.current_resource + resource_value
             )
+
+    def resource_spending(self, resource_cost):
+        if self.current_resource >= resource_cost:
+            self.current_resource = self.current_resource - resource_cost
+            return True
+        else:
+            return False
 
     def is_alive(self):
         return self.current_health > 0
@@ -110,6 +120,7 @@ class Skill:
         self.name: str = daten.get("name", "unbekannt")
         self.min_damage: int = daten.get("min_damage", 0)
         self.max_damage: int = daten.get("max_damage", 0)
+        self.resource_cost: int = daten.get("resource_cost", 0)
 
     def __repr__(self):
         return f"Skill ({self.name} | min damage:{self.min_damage} | max damage:{self.max_damage})"
@@ -122,7 +133,7 @@ class Spell:
         self.name: str = daten.get("name", "unbekannt")
         self.min_damage: int = daten.get("min_damage", 0)
         self.max_damage: int = daten.get("max_damage", 0)
-        self.mana_cost: int = daten.get("mana_cost", 0)
+        self.resource_cost: int = daten.get("resource_cost", 0)
 
     def __repr__(self):
-        return f"Spell ({self.name} | min damage:{self.min_damage} | max damage:{self.max_damage} | mana cost:{self.mana_cost})"
+        return f"Spell ({self.name} | min damage:{self.min_damage} | max damage:{self.max_damage} | mana cost:{self.resource_cost})"

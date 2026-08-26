@@ -6,6 +6,9 @@ connection = verbinden()
 
 every_data = load_all(connection)
 
+for entity in every_data["classes"]:
+    print(entity.name, entity.entity_skills, entity.entity_spells)
+
 disconnect(connection)
 
 player_data, enemy_data = test_fight(every_data["classes"], every_data["enemies"])

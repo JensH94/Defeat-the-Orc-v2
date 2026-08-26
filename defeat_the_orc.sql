@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Erstellungszeit: 26. Aug 2026 um 12:07
+-- Erstellungszeit: 26. Aug 2026 um 15:00
 -- Server-Version: 10.4.32-MariaDB
 -- PHP-Version: 8.2.12
 
@@ -68,6 +68,44 @@ CREATE TABLE `classes` (
 INSERT INTO `classes` (`class_id`, `name`, `base_health`, `base_initiative`, `base_resource`, `resource_type`, `max_resource`) VALUES
 (1, 'Mage', 20, 15, 100, 'mana', 100),
 (2, 'Barbarian', 30, 13, 0, 'rage', 100);
+
+-- --------------------------------------------------------
+
+--
+-- Tabellenstruktur für Tabelle `class_skills`
+--
+
+DROP TABLE IF EXISTS `class_skills`;
+CREATE TABLE `class_skills` (
+  `class_id` int(11) NOT NULL,
+  `skill_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Daten für Tabelle `class_skills`
+--
+
+INSERT INTO `class_skills` (`class_id`, `skill_id`) VALUES
+(2, 1);
+
+-- --------------------------------------------------------
+
+--
+-- Tabellenstruktur für Tabelle `class_spells`
+--
+
+DROP TABLE IF EXISTS `class_spells`;
+CREATE TABLE `class_spells` (
+  `class_id` int(11) NOT NULL,
+  `spell_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Daten für Tabelle `class_spells`
+--
+
+INSERT INTO `class_spells` (`class_id`, `spell_id`) VALUES
+(1, 1);
 
 -- --------------------------------------------------------
 
@@ -150,15 +188,16 @@ CREATE TABLE `skills` (
   `skill_id` int(11) NOT NULL,
   `name` varchar(50) DEFAULT NULL,
   `min_damage` int(11) DEFAULT NULL,
-  `max_damage` int(11) DEFAULT NULL
+  `max_damage` int(11) DEFAULT NULL,
+  `resource_cost` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Daten für Tabelle `skills`
 --
 
-INSERT INTO `skills` (`skill_id`, `name`, `min_damage`, `max_damage`) VALUES
-(1, 'Wounding Strike', 2, 6);
+INSERT INTO `skills` (`skill_id`, `name`, `min_damage`, `max_damage`, `resource_cost`) VALUES
+(1, 'Wounding Strike', 2, 6, 10);
 
 -- --------------------------------------------------------
 
@@ -172,15 +211,15 @@ CREATE TABLE `spells` (
   `name` varchar(50) DEFAULT NULL,
   `min_damage` int(11) DEFAULT NULL,
   `max_damage` int(11) DEFAULT NULL,
-  `mana_cost` int(11) DEFAULT NULL
+  `resource_cost` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Daten für Tabelle `spells`
 --
 
-INSERT INTO `spells` (`spell_id`, `name`, `min_damage`, `max_damage`, `mana_cost`) VALUES
-(1, 'Fireball', 3, 9, 7);
+INSERT INTO `spells` (`spell_id`, `name`, `min_damage`, `max_damage`, `resource_cost`) VALUES
+(1, 'Fireball', 3, 9, 12);
 
 -- --------------------------------------------------------
 
@@ -221,6 +260,20 @@ ALTER TABLE `armor`
 --
 ALTER TABLE `classes`
   ADD PRIMARY KEY (`class_id`);
+
+--
+-- Indizes für die Tabelle `class_skills`
+--
+ALTER TABLE `class_skills`
+  ADD PRIMARY KEY (`class_id`,`skill_id`),
+  ADD KEY `skill_id` (`skill_id`);
+
+--
+-- Indizes für die Tabelle `class_spells`
+--
+ALTER TABLE `class_spells`
+  ADD PRIMARY KEY (`class_id`,`spell_id`),
+  ADD KEY `spell_id` (`spell_id`);
 
 --
 -- Indizes für die Tabelle `effects`
@@ -309,6 +362,24 @@ ALTER TABLE `spells`
 --
 ALTER TABLE `weapons`
   MODIFY `weapon_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- Constraints der exportierten Tabellen
+--
+
+--
+-- Constraints der Tabelle `class_skills`
+--
+ALTER TABLE `class_skills`
+  ADD CONSTRAINT `class_skills_ibfk_1` FOREIGN KEY (`class_id`) REFERENCES `classes` (`class_id`),
+  ADD CONSTRAINT `class_skills_ibfk_2` FOREIGN KEY (`skill_id`) REFERENCES `skills` (`skill_id`);
+
+--
+-- Constraints der Tabelle `class_spells`
+--
+ALTER TABLE `class_spells`
+  ADD CONSTRAINT `class_spells_ibfk_1` FOREIGN KEY (`class_id`) REFERENCES `classes` (`class_id`),
+  ADD CONSTRAINT `class_spells_ibfk_2` FOREIGN KEY (`spell_id`) REFERENCES `spells` (`spell_id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
