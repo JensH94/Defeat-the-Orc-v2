@@ -123,7 +123,7 @@ class Skill:
         self.resource_cost: int = daten.get("resource_cost", 0)
 
     def __repr__(self):
-        return f"Skill ({self.name} | min damage:{self.min_damage} | max damage:{self.max_damage})"
+        return f"Skill ({self.name} | min damage:{self.min_damage} | max damage:{self.max_damage} | resource cost:{self.resource_cost})"
 
 
 class Spell:
@@ -136,4 +136,4 @@ class Spell:
         self.resource_cost: int = daten.get("resource_cost", 0)
 
     def __repr__(self):
-        return f"Spell ({self.name} | min damage:{self.min_damage} | max damage:{self.max_damage} | mana cost:{self.resource_cost})"
+        return f"Spell ({self.name} | min damage:{self.min_damage} | max damage:{self.max_damage} | resource cost:{self.resource_cost})"
