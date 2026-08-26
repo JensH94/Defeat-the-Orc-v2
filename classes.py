@@ -8,8 +8,10 @@ class Entity:
         self.name: str = daten.get("name", "Unbekannt")
         self.base_health: int = daten.get("base_health", 0)
         self.current_health: int = self.base_health
-        self.base_mana: int = daten.get("base_mana", 0)
-        self.current_mana: int = self.base_mana
+        self.base_resource: int = daten.get("base_resource", 0)
+        self.max_resource: int = daten.get("max_resource", 0)
+        self.current_resource: int = self.base_resource
+        self.resource_type: str = daten.get("resource_type", "none")
         self.base_initiative: int = daten.get("base_initiative", 0)
         self.current_initiative: int = self.base_initiative
         self.unarmed_min_damage: int = daten.get("unarmed_min_damage", 1)
@@ -19,6 +21,7 @@ class Entity:
         self.base_hit_chance: float = daten.get("base_hit_chance", 0.97)
         self.current_hit_chance: float = self.base_hit_chance
         self.entity_effects: list = []
+        self.death_reported: bool = False
 
     def tick_effects(self):
         effects_events = []
@@ -29,11 +32,17 @@ class Entity:
         self.entity_effects = [e for e in self.entity_effects if e.effects_duration > 0]
         return effects_events
 
+    def resource_generation(self, resource_value):
+        if self.resource_type == "rage":
+            self.current_resource = min(
+                self.max_resource, self.current_resource + resource_value
+            )
+
     def is_alive(self):
         return self.current_health > 0
 
     def __repr__(self) -> str:
-        return f"Entity ({self.name} | HP: {self.base_health} | Mana: {self.base_mana} | Initiative: {self.base_initiative})"
+        return f"Entity ({self.name} | HP: {self.base_health} | Mana: {self.base_resource} | Initiative: {self.base_initiative})"
 
 
 class Item:

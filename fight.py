@@ -2,6 +2,9 @@ import random
 from classes import Entity
 from print_style import slow_print, slow_input
 
+RAGE_HIT_FACTOR = 0.2
+RAGE_TICK_FACTOR = 0.1
+
 
 def key_base_init(entity):
     return entity.base_initiative
@@ -95,10 +98,12 @@ class Fight:
                 damage = self.dmg_calculation(
                     entity.unarmed_min_damage, entity.unarmed_max_damage
                 )
+                entity.resource_generation(int(entity.max_resource * RAGE_HIT_FACTOR))
                 target.current_health = max(0, target.current_health - damage)
                 slow_print(f"{entity.name} attacks {target.name} for {damage} !")
-                if not target.is_alive():
+                if not target.is_alive() and not target.death_reported:
                     self.announce_death(target)
+                    target.death_reported = True
 
                 if not (
                     self.health_check(self.player_group)
@@ -112,13 +117,19 @@ class Fight:
                         slow_print(
                             f"\n{entity.name} takes {tick_damage} from {effects_name}"
                         )
-                if not entity.is_alive():
+                    entity.resource_generation(
+                        int(entity.max_resource * RAGE_TICK_FACTOR)
+                    )
+                if not entity.is_alive() and not entity.death_reported:
                     self.announce_death(entity)
+                    entity.death_reported = True
 
             slow_print("Current Health:")
 
             for entity in self.turn_order:
-                slow_print(f"Name:{entity.name} HP:{entity.current_health}")
+                slow_print(
+                    f"Name:{entity.name} HP:{entity.current_health} {entity.resource_type}:{entity.current_resource}"
+                )
 
             self.rounds += 1
 
