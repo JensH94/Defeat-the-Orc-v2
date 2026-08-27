@@ -88,11 +88,14 @@ class Fight:
                 )
 
 
-    def choose_ability(self, ability_list):
+    def choose_ability(self, ability_list, entity):
         while True:
             slow_print(f" Choose an ability\n")
             for index, ability in enumerate(ability_list, start=1):
+                
                 slow_print(f" {index} - {ability.name}")
+
+            slow_print("0 - Back")
 
             try:
                 number = int(slow_input("Choose\n"))
@@ -100,8 +103,15 @@ class Fight:
                 slow_print("Not a number")
                 continue
 
-            if 1 <= number <= len(ability_list):
-                return ability_list[number - 1]
+            if number == 0:
+                return None
+            elif 1 <= number <= len(ability_list):
+                selected = ability_list[number - 1]
+                if entity.resource_spending(selected.resource_cost):
+                    return selected
+                else:
+                    slow_print("Not enough resource")
+                    continue
             else:
                 slow_print("Wrong number")
 
@@ -145,8 +155,11 @@ class Fight:
                             ability_list = entity.entity_skills
                         elif action == "Spells":
                             ability_list = entity.entity_spells
-                        ability = self.choose_ability(ability_list)
-                        damage = self.dmg_calculation(ability.min_damage, ability.max_damage)
+                        ability = self.choose_ability(ability_list, entity)
+                        if ability is None:
+                            damage = 0
+                        else:
+                            damage = self.dmg_calculation(ability.min_damage, ability.max_damage)
                     target_group = self.enemy_group
                     target = self.player_choice(target_group)
                 else:
