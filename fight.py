@@ -32,6 +32,33 @@ class Fight:
     def announce_death(self, entity):
         slow_print(f"{entity.name} died")
 
+    def choose_action(self, entity) -> str:
+
+        choices = []
+        choices.append("Attack")
+
+        if entity.entity_skills:
+            choices.append("Skills")
+        if entity.entity_spells:
+            choices.append("Spells")
+
+        while True:
+            for index, action in enumerate(choices, start=1):
+                slow_print(f"{index} - {action}")
+
+            try:
+                choice = int(slow_input("\nChoose an action\n"))
+            except ValueError:
+                slow_print(f"Not a number, choose from {len(choices)}")
+                continue
+
+            if 1 <= choice <= len(choices):
+                return choices[choice - 1]
+            else:
+                slow_print(f"Wrong number, pick a number from {len(choices)}")
+
+        
+        
     def player_choice(self, entity_group) -> Entity:
 
         target_group = []
@@ -59,6 +86,27 @@ class Fight:
                 slow_print(
                     f"Your input was a wrong number, please choose a number between 1 and {len(target_group)}"
                 )
+
+
+    def choose_ability(self, ability_list):
+        while True:
+            slow_print(f" Choose an ability\n")
+            for index, ability in enumerate(ability_list, start=1):
+                slow_print(f" {index} - {ability.name}")
+
+            try:
+                number = int(slow_input("Choose\n"))
+            except ValueError:
+                slow_print("Not a number")
+                continue
+
+            if 1 <= number <= len(ability_list):
+                return ability_list[number - 1]
+            else:
+                slow_print("Wrong number")
+
+
+
 
     def enemy_choice(self, entity_group) -> Entity:
 
@@ -89,15 +137,23 @@ class Fight:
                     continue
                 slow_print(f"{entity.name}s turn: ")
                 if entity in self.player_group:
+                    action = self.choose_action(entity)
+                    if action == "Attack":
+                        damage = self.dmg_calculation(entity.unarmed_min_damage, entity.unarmed_max_damage)
+                    else:
+                        if action == "Skills":
+                            ability_list = entity.entity_skills
+                        elif action == "Spells":
+                            ability_list = entity.entity_spells
+                        ability = self.choose_ability(ability_list)
+                        damage = self.dmg_calculation(ability.min_damage, ability.max_damage)
                     target_group = self.enemy_group
                     target = self.player_choice(target_group)
                 else:
                     target_group = self.player_group
                     target = self.enemy_choice(target_group)
+                    damage = self.dmg_calculation(entity.unarmed_min_damage, entity.unarmed_max_damage)
 
-                damage = self.dmg_calculation(
-                    entity.unarmed_min_damage, entity.unarmed_max_damage
-                )
                 entity.resource_generation(int(entity.max_resource * RAGE_HIT_FACTOR))
                 target.current_health = max(0, target.current_health - damage)
                 slow_print(f"{entity.name} attacks {target.name} for {damage} !")

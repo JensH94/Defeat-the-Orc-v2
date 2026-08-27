@@ -72,8 +72,6 @@ def load_all(connection):
     weapons_data = get_data(connection, "weapons")
     armor_data = get_data(connection, "armor")
     effects_data = get_data(connection, "effects")
-    skills_data = get_data(connection, "skills")
-    spells_data = get_data(connection, "spells")
 
     character_classes = build_classes(classes_data, connection)
     enemies = build_enemies(enemies_data)
@@ -81,8 +79,6 @@ def load_all(connection):
     weapons = build_weapons(weapons_data)
     armor = build_armor(armor_data)
     effects = build_effects(effects_data)
-    skills = build_skills(skills_data)
-    spells = build_spells(spells_data)
 
     data_all = {
         "classes": character_classes,
@@ -91,7 +87,5 @@ def load_all(connection):
         "weapons": weapons,
         "armor": armor,
         "effects": effects,
-        "skills": skills,
-        "spells": spells,
     }
     return data_all
