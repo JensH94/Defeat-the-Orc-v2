@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Erstellungszeit: 26. Aug 2026 um 15:00
+-- Erstellungszeit: 28. Aug 2026 um 16:55
 -- Server-Version: 10.4.32-MariaDB
 -- PHP-Version: 8.2.12
 
@@ -202,6 +202,26 @@ INSERT INTO `skills` (`skill_id`, `name`, `min_damage`, `max_damage`, `resource_
 -- --------------------------------------------------------
 
 --
+-- Tabellenstruktur für Tabelle `skill_effects`
+--
+
+DROP TABLE IF EXISTS `skill_effects`;
+CREATE TABLE `skill_effects` (
+  `skill_id` int(11) NOT NULL,
+  `effect_id` int(11) NOT NULL,
+  `effect_chance` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Daten für Tabelle `skill_effects`
+--
+
+INSERT INTO `skill_effects` (`skill_id`, `effect_id`, `effect_chance`) VALUES
+(1, 2, 100);
+
+-- --------------------------------------------------------
+
+--
 -- Tabellenstruktur für Tabelle `spells`
 --
 
@@ -224,6 +244,26 @@ INSERT INTO `spells` (`spell_id`, `name`, `min_damage`, `max_damage`, `resource_
 -- --------------------------------------------------------
 
 --
+-- Tabellenstruktur für Tabelle `spell_effects`
+--
+
+DROP TABLE IF EXISTS `spell_effects`;
+CREATE TABLE `spell_effects` (
+  `spell_id` int(11) NOT NULL,
+  `effect_id` int(11) NOT NULL,
+  `effect_chance` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Daten für Tabelle `spell_effects`
+--
+
+INSERT INTO `spell_effects` (`spell_id`, `effect_id`, `effect_chance`) VALUES
+(1, 1, 30);
+
+-- --------------------------------------------------------
+
+--
 -- Tabellenstruktur für Tabelle `weapons`
 --
 
@@ -233,17 +273,16 @@ CREATE TABLE `weapons` (
   `name` varchar(50) DEFAULT NULL,
   `min_damage` int(11) DEFAULT NULL,
   `max_damage` int(11) DEFAULT NULL,
-  `crit_chance` int(11) DEFAULT NULL,
-  `hit_chance` int(11) DEFAULT NULL
+  `crit_chance` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Daten für Tabelle `weapons`
 --
 
-INSERT INTO `weapons` (`weapon_id`, `name`, `min_damage`, `max_damage`, `crit_chance`, `hit_chance`) VALUES
-(1, 'Axe', 3, 10, 0, 0),
-(2, 'Staff', 1, 6, 0, 0);
+INSERT INTO `weapons` (`weapon_id`, `name`, `min_damage`, `max_damage`, `crit_chance`) VALUES
+(1, 'Axe', 3, 10, 0),
+(2, 'Staff', 1, 6, 0);
 
 --
 -- Indizes der exportierten Tabellen
@@ -300,10 +339,24 @@ ALTER TABLE `skills`
   ADD PRIMARY KEY (`skill_id`);
 
 --
+-- Indizes für die Tabelle `skill_effects`
+--
+ALTER TABLE `skill_effects`
+  ADD PRIMARY KEY (`skill_id`,`effect_id`),
+  ADD KEY `effect_id` (`effect_id`);
+
+--
 -- Indizes für die Tabelle `spells`
 --
 ALTER TABLE `spells`
   ADD PRIMARY KEY (`spell_id`);
+
+--
+-- Indizes für die Tabelle `spell_effects`
+--
+ALTER TABLE `spell_effects`
+  ADD PRIMARY KEY (`spell_id`,`effect_id`),
+  ADD KEY `effect_id` (`effect_id`);
 
 --
 -- Indizes für die Tabelle `weapons`
@@ -380,6 +433,20 @@ ALTER TABLE `class_skills`
 ALTER TABLE `class_spells`
   ADD CONSTRAINT `class_spells_ibfk_1` FOREIGN KEY (`class_id`) REFERENCES `classes` (`class_id`),
   ADD CONSTRAINT `class_spells_ibfk_2` FOREIGN KEY (`spell_id`) REFERENCES `spells` (`spell_id`);
+
+--
+-- Constraints der Tabelle `skill_effects`
+--
+ALTER TABLE `skill_effects`
+  ADD CONSTRAINT `skill_effects_ibfk_1` FOREIGN KEY (`skill_id`) REFERENCES `skills` (`skill_id`),
+  ADD CONSTRAINT `skill_effects_ibfk_2` FOREIGN KEY (`effect_id`) REFERENCES `effects` (`effects_id`);
+
+--
+-- Constraints der Tabelle `spell_effects`
+--
+ALTER TABLE `spell_effects`
+  ADD CONSTRAINT `spell_effects_ibfk_1` FOREIGN KEY (`spell_id`) REFERENCES `spells` (`spell_id`),
+  ADD CONSTRAINT `spell_effects_ibfk_2` FOREIGN KEY (`effect_id`) REFERENCES `effects` (`effects_id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

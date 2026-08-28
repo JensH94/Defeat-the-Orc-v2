@@ -1,5 +1,5 @@
 import random
-from classes import Entity
+from classes import Entity, Effects, Spell, Skill
 from print_style import slow_print, slow_input
 
 RAGE_HIT_FACTOR = 0.2
@@ -130,6 +130,9 @@ class Fight:
     def dmg_calculation(self, min_damage, max_damage) -> int:
         return random.randint(min_damage, max_damage)
 
+    def roll_chance(self, chance) -> bool:
+        return random.randint(1, 100) <= chance
+
     def fight_loop(self) -> None:
 
         player_names = ",".join(entity.name for entity in self.player_group)
@@ -172,6 +175,16 @@ class Fight:
                 entity.resource_generation(int(entity.max_resource * RAGE_HIT_FACTOR))
                 target.current_health = max(0, target.current_health - damage)
                 slow_print(f"{entity.name} attacks {target.name} for {damage} !")
+                if action == "Skills":
+                    effect_list = ability.skill_effects
+                elif action == "Spells":
+                    effect_list = ability.spell_effects
+
+                if action == "Skills" or action == "Spells":
+                    for effect in effect_list:
+                        if self.roll_chance(effect.effect_chance):
+                            target.entity_effects.append(effect)
+                            
                 if not target.is_alive() and not target.death_reported:
                     self.announce_death(target)
                     target.death_reported = True

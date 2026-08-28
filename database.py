@@ -56,6 +56,29 @@ def get_spells_for_classes(connection, class_id):
     return cursor.fetchall()
 
 
+def get_effects_for_skills(connection,skill_id):
+    cursor = connection.cursor(dictionary=True)
+    query = """
+        SELECT effects.*, skill_effects.effect_chance
+        FROM skill_effects
+        JOIN effects ON skill_effects.effect_id = effects.effects_id
+        WHERE skill_effects.skill_id = %s
+        """
+    cursor.execute(query, (skill_id,))
+    return cursor.fetchall()
+
+def get_effects_for_spells(connection, spell_id):
+    cursor = connection.cursor(dictionary=True)
+    query= """
+        SELECT effects.*, spell_effects.effect_chance
+        FROM spell_effects
+        JOIN effects ON spell_effects.effect_id = effects.effects_id
+        WHERE spell_effects.spell_id = %s
+        """
+    cursor.execute(query, (spell_id,))
+    return cursor.fetchall()
+
+
 def disconnect(connection):
     if connection.is_connected():
         connection.close()

@@ -103,6 +103,7 @@ class Effects:
         self.max_damage: int = daten.get("max_damage", 0)
         self.effects_target = "current_health"
         self.effects_duration: int = daten.get("duration", 0)
+        self.effect_chance: int = daten.get("effect_chance", 0)
 
     def effects_apply(self, target):
         effects_dmg: int = random.randint(self.min_damage, self.max_damage)
@@ -110,7 +111,7 @@ class Effects:
         return effects_dmg
 
     def __repr__(self):
-        return f"Effect ({self.name} | min damage:{self.min_damage} | max damage:{self.max_damage})"
+        return f"Effect ({self.name} | min damage:{self.min_damage} | max damage:{self.max_damage} | effect chance:{self.effect_chance})"
 
 
 class Skill:
@@ -121,6 +122,7 @@ class Skill:
         self.min_damage: int = daten.get("min_damage", 0)
         self.max_damage: int = daten.get("max_damage", 0)
         self.resource_cost: int = daten.get("resource_cost", 0)
+        self.skill_effects: list = []
 
     def __repr__(self):
         return f"Skill ({self.name} | min damage:{self.min_damage} | max damage:{self.max_damage} | resource cost:{self.resource_cost})"
@@ -134,6 +136,7 @@ class Spell:
         self.min_damage: int = daten.get("min_damage", 0)
         self.max_damage: int = daten.get("max_damage", 0)
         self.resource_cost: int = daten.get("resource_cost", 0)
+        self.spell_effects: list = []
 
     def __repr__(self):
         return f"Spell ({self.name} | min damage:{self.min_damage} | max damage:{self.max_damage} | resource cost:{self.resource_cost})"
