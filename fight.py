@@ -147,21 +147,23 @@ class Fight:
                     continue
                 slow_print(f"{entity.name}s turn: ")
                 if entity in self.player_group:
-                    action = self.choose_action(entity)
-                    if action == "Attack":
-                        damage = self.dmg_calculation(entity.unarmed_min_damage, entity.unarmed_max_damage)
-                    else:
-                        if action == "Skills":
-                            ability_list = entity.entity_skills
-                        elif action == "Spells":
-                            ability_list = entity.entity_spells
-                        ability = self.choose_ability(ability_list, entity)
-                        if ability is None:
-                            damage = 0
+                    while True:
+                        action = self.choose_action(entity)
+                        if action == "Attack":
+                            damage = self.dmg_calculation(entity.unarmed_min_damage, entity.unarmed_max_damage)
                         else:
-                            damage = self.dmg_calculation(ability.min_damage, ability.max_damage)
-                    target_group = self.enemy_group
-                    target = self.player_choice(target_group)
+                            if action == "Skills":
+                                ability_list = entity.entity_skills
+                            elif action == "Spells":
+                                ability_list = entity.entity_spells
+                            ability = self.choose_ability(ability_list, entity)
+                            if ability is None:
+                                continue
+                            else:
+                                damage = self.dmg_calculation(ability.min_damage, ability.max_damage)
+                        target_group = self.enemy_group
+                        target = self.player_choice(target_group)
+                        break
                 else:
                     target_group = self.player_group
                     target = self.enemy_choice(target_group)
