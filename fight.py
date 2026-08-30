@@ -149,6 +149,7 @@ class Fight:
                 if not entity.is_alive():
                     continue
                 slow_print(f"{entity.name}s turn: ")
+                action = None
                 if entity in self.player_group:
                     while True:
                         action = self.choose_action(entity)
