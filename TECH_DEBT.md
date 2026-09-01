@@ -7,3 +7,8 @@ Tech-Debt:
 - get_skills/get_spells_for_classes fast identisch
 - entity_id wird vom Loader gesetzt statt im Konstruktor, später als Parameter
 - **repr** wird zu testzwecken immer mal umgeschrieben ("dauerdebt")
+- try/int(input)/range-check -> helper-function
+- with connection.cursor() -> Context Manager für sauberkeit
+- load_all -> Standalone = Effects -> entfernen
+- Magic Strings -> "Attack", "Skills", "Spells" -> Enum benutzen
+- helper functions -> redundanz reduzieren und sauberer
