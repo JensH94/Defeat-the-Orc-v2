@@ -132,6 +132,18 @@ class Fight:
         enemy_names = ",".join(entity.name for entity in self.enemy_group)
         slow_print(f"Fight between {palyer_names} and {enemy_names} !")
 
+    def tick_phase(self):
+        for entity in self.turn_order:
+            if entity.is_alive():
+                for effects_name, tick_damage in entity.tick_effects():
+                    slow_print(
+                        f"\n{entity.name} takes {tick_damage} from {effects_name}"
+                    )
+                entity.resource_generation(int(entity.max_resource * RAGE_TICK_FACTOR))
+            if not entity.is_alive() and not entity.death_reported:
+                self.announce_death(entity)
+                entity.death_reported = True
+
     def fight_loop(self) -> None:
 
         self.announce_fight()
@@ -199,18 +211,7 @@ class Fight:
                 ):
                     break
 
-            for entity in self.turn_order:
-                if entity.is_alive():
-                    for effects_name, tick_damage in entity.tick_effects():
-                        slow_print(
-                            f"\n{entity.name} takes {tick_damage} from {effects_name}"
-                        )
-                    entity.resource_generation(
-                        int(entity.max_resource * RAGE_TICK_FACTOR)
-                    )
-                if not entity.is_alive() and not entity.death_reported:
-                    self.announce_death(entity)
-                    entity.death_reported = True
+            self.tick_phase()
 
             slow_print("Current Health:")
 
