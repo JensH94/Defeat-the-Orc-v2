@@ -1,5 +1,5 @@
 import random
-from classes import Entity, Effects, Spell, Skill
+from classes import Entity
 from print_style import slow_print, slow_input
 
 RAGE_HIT_FACTOR = 0.2
@@ -57,8 +57,6 @@ class Fight:
             else:
                 slow_print(f"Wrong number, pick a number from {len(choices)}")
 
-        
-        
     def player_choice(self, entity_group) -> Entity:
 
         target_group = []
@@ -75,7 +73,7 @@ class Fight:
                 target_number = int(slow_input("Choose a Target\n"))
             except ValueError:
                 slow_print(
-                    f"Your input was not a number, please choose a number between 1 and {len(target_group)}"
+                    f"Not a number, please choose a number between 1 and {len(target_group)}"
                 )
                 continue
 
@@ -84,15 +82,14 @@ class Fight:
                 return target
             else:
                 slow_print(
-                    f"Your input was a wrong number, please choose a number between 1 and {len(target_group)}"
+                    f"Wrong number, please choose a number between 1 and {len(target_group)}"
                 )
-
 
     def choose_ability(self, ability_list, entity):
         while True:
             slow_print(f" Choose an ability\n")
             for index, ability in enumerate(ability_list, start=1):
-                
+
                 slow_print(f" {index} - {ability.name}")
 
             slow_print("0 - Back")
@@ -114,9 +111,6 @@ class Fight:
                     continue
             else:
                 slow_print("Wrong number")
-
-
-
 
     def enemy_choice(self, entity_group) -> Entity:
 
@@ -154,7 +148,9 @@ class Fight:
                     while True:
                         action = self.choose_action(entity)
                         if action == "Attack":
-                            damage = self.dmg_calculation(entity.unarmed_min_damage, entity.unarmed_max_damage)
+                            damage = self.dmg_calculation(
+                                entity.unarmed_min_damage, entity.unarmed_max_damage
+                            )
                         else:
                             if action == "Skills":
                                 ability_list = entity.entity_skills
@@ -164,14 +160,18 @@ class Fight:
                             if ability is None:
                                 continue
                             else:
-                                damage = self.dmg_calculation(ability.min_damage, ability.max_damage)
+                                damage = self.dmg_calculation(
+                                    ability.min_damage, ability.max_damage
+                                )
                         target_group = self.enemy_group
                         target = self.player_choice(target_group)
                         break
                 else:
                     target_group = self.player_group
                     target = self.enemy_choice(target_group)
-                    damage = self.dmg_calculation(entity.unarmed_min_damage, entity.unarmed_max_damage)
+                    damage = self.dmg_calculation(
+                        entity.unarmed_min_damage, entity.unarmed_max_damage
+                    )
 
                 entity.resource_generation(int(entity.max_resource * RAGE_HIT_FACTOR))
                 target.current_health = max(0, target.current_health - damage)
@@ -185,7 +185,7 @@ class Fight:
                     for effect in effect_list:
                         if self.roll_chance(effect.effect_chance):
                             target.entity_effects.append(effect)
-                            
+
                 if not target.is_alive() and not target.death_reported:
                     self.announce_death(target)
                     target.death_reported = True
@@ -229,6 +229,5 @@ def test_fight(character_classes, enemies):
 
     enemy_group.append(enemies[0])
     enemy_group.append(enemies[1])
-    """ enemy_group.append(enemies[1]) """
 
     return player_group, enemy_group
