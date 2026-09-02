@@ -10,5 +10,3 @@ Tech-Debt:
 - try/int(input)/range-check -> helper-function
 - with connection.cursor() -> Context Manager für sauberkeit
 - load_all -> Standalone = Effects -> entfernen
-- Magic Strings -> "Attack", "Skills", "Spells" -> Enum benutzen
-- helper functions -> redundanz reduzieren und sauberer

@@ -1,9 +1,16 @@
 import random
 from classes import Entity
 from print_style import slow_print, slow_input
+from enum import Enum
 
 RAGE_HIT_FACTOR = 0.2
 RAGE_TICK_FACTOR = 0.1
+
+
+class Action(Enum):
+    ATTACK = "Attack"
+    SKILLS = "Skills"
+    SPELLS = "Spells"
 
 
 def key_base_init(entity):
@@ -32,19 +39,19 @@ class Fight:
     def announce_death(self, entity):
         slow_print(f"{entity.name} died")
 
-    def choose_action(self, entity) -> str:
+    def choose_action(self, entity) -> Action:
 
         choices = []
-        choices.append("Attack")
+        choices.append(Action.ATTACK)
 
         if entity.entity_skills:
-            choices.append("Skills")
+            choices.append(Action.SKILLS)
         if entity.entity_spells:
-            choices.append("Spells")
+            choices.append(Action.SPELLS)
 
         while True:
             for index, action in enumerate(choices, start=1):
-                slow_print(f"{index} - {action}")
+                slow_print(f"{index} - {action.value}")
 
             try:
                 choice = int(slow_input("\nChoose an action\n"))
@@ -170,14 +177,14 @@ class Fight:
                 if entity in self.player_group:
                     while True:
                         action = self.choose_action(entity)
-                        if action == "Attack":
+                        if action == Action.ATTACK:
                             damage = self.dmg_calculation(
                                 entity.unarmed_min_damage, entity.unarmed_max_damage
                             )
                         else:
-                            if action == "Skills":
+                            if action == Action.SKILLS:
                                 ability_list = entity.entity_skills
-                            elif action == "Spells":
+                            elif action == Action.SPELLS:
                                 ability_list = entity.entity_spells
                             ability = self.choose_ability(ability_list, entity)
                             if ability is None:
@@ -199,12 +206,12 @@ class Fight:
                 entity.resource_generation(int(entity.max_resource * RAGE_HIT_FACTOR))
                 target.current_health = max(0, target.current_health - damage)
                 slow_print(f"{entity.name} attacks {target.name} for {damage} !")
-                if action == "Skills":
+                if action == Action.SKILLS:
                     effect_list = ability.skill_effects
-                elif action == "Spells":
+                elif action == Action.SPELLS:
                     effect_list = ability.spell_effects
 
-                if action == "Skills" or action == "Spells":
+                if action == Action.SKILLS or action == Action.SPELLS:
                     for effect in effect_list:
                         if self.roll_chance(effect.effect_chance):
                             target.entity_effects.append(effect)
