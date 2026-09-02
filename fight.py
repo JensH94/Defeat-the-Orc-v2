@@ -144,6 +144,14 @@ class Fight:
                 self.announce_death(entity)
                 entity.death_reported = True
 
+    def announce_health(self):
+        slow_print("Current Health:")
+
+        for entity in self.turn_order:
+            slow_print(
+                f"Name:{entity.name} HP:{entity.current_health} {entity.resource_type}:{entity.current_resource}"
+            )
+
     def fight_loop(self) -> None:
 
         self.announce_fight()
@@ -213,12 +221,7 @@ class Fight:
 
             self.tick_phase()
 
-            slow_print("Current Health:")
-
-            for entity in self.turn_order:
-                slow_print(
-                    f"Name:{entity.name} HP:{entity.current_health} {entity.resource_type}:{entity.current_resource}"
-                )
+            self.announce_health()
 
             self.rounds += 1
 
