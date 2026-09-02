@@ -127,11 +127,14 @@ class Fight:
     def roll_chance(self, chance) -> bool:
         return random.randint(1, 100) <= chance
 
+    def announce_fight(self):
+        palyer_names = ",".join(entity.name for entity in self.player_group)
+        enemy_names = ",".join(entity.name for entity in self.enemy_group)
+        slow_print(f"Fight between {palyer_names} and {enemy_names} !")
+
     def fight_loop(self) -> None:
 
-        player_names = ",".join(entity.name for entity in self.player_group)
-        enemy_names = ",".join(entity.name for entity in self.enemy_group)
-        slow_print(f"Fight between {player_names} and {enemy_names} !")
+        self.announce_fight()
 
         while self.health_check(self.player_group) and self.health_check(
             self.enemy_group
