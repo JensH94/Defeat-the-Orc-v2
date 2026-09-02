@@ -1,7 +1,8 @@
 import random
-from classes import Entity
+from classes import Entity, Skill, Spell
 from print_style import slow_print, slow_input
 from enum import Enum
+from dataclasses import dataclass
 
 RAGE_HIT_FACTOR = 0.2
 RAGE_TICK_FACTOR = 0.1
@@ -11,6 +12,13 @@ class Action(Enum):
     ATTACK = "Attack"
     SKILLS = "Skills"
     SPELLS = "Spells"
+
+
+@dataclass
+class TurnChoice:
+    action: Action
+    ability: Skill | Spell | None
+    target: Entity
 
 
 def key_base_init(entity):
@@ -128,6 +136,45 @@ class Fight:
         attack_target = random.choice(target_group)
         return attack_target
 
+    def choose_turn(self, entity):
+        step = "action"
+        action = None
+        ability = None
+        target = None
+
+        while True:
+            if step == "action":
+                action = self.choose_action(entity)
+                if action == Action.ATTACK:
+                    step = "target"
+                else:
+                    step = "ability"
+            elif step == "ability":
+                if action == Action.SKILLS:
+                    ability_list = entity.entity_skills
+                elif action == Action.SPELLS:
+                    ability_list = entity.entity_spells
+                ability = self.choose_ability(ability_list, entity)
+                if ability is None:
+                    step = "action"
+                else:
+                    step = "target"
+            elif step == "target":
+                target = self.player_choice(self.enemy_group)
+                if target is None:
+                    if action == Action.ATTACK:
+                        step = "action"
+                    else:
+                        step = "ability"
+                else:
+                    return TurnChoice(action, ability, target)
+
+    def enemy_turn(self, entity):
+        action = Action.ATTACK
+        ability = None
+        target = self.enemy_choice(self.player_group)
+        return TurnChoice(action, ability, target)
+
     def dmg_calculation(self, min_damage, max_damage) -> int:
         return random.randint(min_damage, max_damage)
 
@@ -173,52 +220,35 @@ class Fight:
                 if not entity.is_alive():
                     continue
                 slow_print(f"{entity.name}s turn: ")
-                action = None
                 if entity in self.player_group:
-                    while True:
-                        action = self.choose_action(entity)
-                        if action == Action.ATTACK:
-                            damage = self.dmg_calculation(
-                                entity.unarmed_min_damage, entity.unarmed_max_damage
-                            )
-                        else:
-                            if action == Action.SKILLS:
-                                ability_list = entity.entity_skills
-                            elif action == Action.SPELLS:
-                                ability_list = entity.entity_spells
-                            ability = self.choose_ability(ability_list, entity)
-                            if ability is None:
-                                continue
-                            else:
-                                damage = self.dmg_calculation(
-                                    ability.min_damage, ability.max_damage
-                                )
-                        target_group = self.enemy_group
-                        target = self.player_choice(target_group)
-                        break
+                    turn = self.choose_turn(entity)
                 else:
-                    target_group = self.player_group
-                    target = self.enemy_choice(target_group)
+                    turn = self.enemy_turn(entity)
+                if turn.action == Action.ATTACK:
                     damage = self.dmg_calculation(
                         entity.unarmed_min_damage, entity.unarmed_max_damage
                     )
+                else:
+                    damage = self.dmg_calculation(
+                        turn.ability.min_damage, turn.ability.max_damage
+                    )
 
                 entity.resource_generation(int(entity.max_resource * RAGE_HIT_FACTOR))
-                target.current_health = max(0, target.current_health - damage)
-                slow_print(f"{entity.name} attacks {target.name} for {damage} !")
-                if action == Action.SKILLS:
-                    effect_list = ability.skill_effects
-                elif action == Action.SPELLS:
-                    effect_list = ability.spell_effects
+                turn.target.current_health = max(0, turn.target.current_health - damage)
+                slow_print(f"{entity.name} attacks {turn.target.name} for {damage} !")
+                if turn.action == Action.SKILLS:
+                    effect_list = turn.ability.skill_effects
+                elif turn.action == Action.SPELLS:
+                    effect_list = turn.ability.spell_effects
 
-                if action == Action.SKILLS or action == Action.SPELLS:
+                if turn.action == Action.SKILLS or turn.action == Action.SPELLS:
                     for effect in effect_list:
                         if self.roll_chance(effect.effect_chance):
-                            target.entity_effects.append(effect)
+                            turn.target.entity_effects.append(effect)
 
-                if not target.is_alive() and not target.death_reported:
-                    self.announce_death(target)
-                    target.death_reported = True
+                if not turn.target.is_alive() and not turn.target.death_reported:
+                    self.announce_death(turn.target)
+                    turn.target.death_reported = True
 
                 if not (
                     self.health_check(self.player_group)
