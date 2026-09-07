@@ -1,5 +1,12 @@
 from classes import Entity, Item, Weapon, Armor, Effects, Skill, Spell
-from database import get_data, get_skills_for_classes, get_spells_for_classes, get_effects_for_skills, get_effects_for_spells
+from random import random
+from database import (
+    get_data,
+    get_skills_for_classes,
+    get_spells_for_classes,
+    get_effects_for_skills,
+    get_effects_for_spells,
+)
 
 
 def build_classes(classes_data, connection):
@@ -54,9 +61,7 @@ def build_skills(skills_data, connection):
     skills = []
     for zeile in skills_data:
         skill = Skill(zeile)
-        effects_data = get_effects_for_skills(
-            connection, skill.skill_id
-        )
+        effects_data = get_effects_for_skills(connection, skill.skill_id)
         skill.skill_effects = build_effects(effects_data)
         skills.append(skill)
     return skills
@@ -66,12 +71,14 @@ def build_spells(spells_data, connection):
     spells = []
     for zeile in spells_data:
         spell = Spell(zeile)
-        effects_data = get_effects_for_spells(
-            connection, spell.spell_id
-        )
+        effects_data = get_effects_for_spells(connection, spell.spell_id)
         spell.spell_effects = build_effects(effects_data)
         spells.append(spell)
     return spells
+
+
+def random_enemy_count():
+    return random.randint(1, 3)
 
 
 def load_all(connection):
@@ -98,4 +105,4 @@ def load_all(connection):
         "armor": armor,
         "effects": effects,
     }
-    return data_all
+    return data_all, enemies_data

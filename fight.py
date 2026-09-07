@@ -191,7 +191,7 @@ class Fight:
             if entity.is_alive():
                 for effects_name, tick_damage in entity.tick_effects():
                     slow_print(
-                        f"\n{entity.name} takes {tick_damage} from {effects_name}"
+                        f"\n{entity.name} takes {tick_damage} damage from {effects_name}"
                     )
                 entity.resource_generation(int(entity.max_resource * RAGE_TICK_FACTOR))
             if not entity.is_alive() and not entity.death_reported:
@@ -235,7 +235,9 @@ class Fight:
 
                 entity.resource_generation(int(entity.max_resource * RAGE_HIT_FACTOR))
                 turn.target.current_health = max(0, turn.target.current_health - damage)
-                slow_print(f"{entity.name} attacks {turn.target.name} for {damage} !")
+                slow_print(
+                    f"{turn.target.name} takes {damage} damage from {entity.name}"
+                )
                 if turn.action == Action.SKILLS:
                     effect_list = turn.ability.skill_effects
                 elif turn.action == Action.SPELLS:
@@ -245,6 +247,9 @@ class Fight:
                     for effect in effect_list:
                         if self.roll_chance(effect.effect_chance):
                             turn.target.entity_effects.append(effect)
+                            slow_print(
+                                f"{turn.target.name} is now affected by {effect.name}"
+                            )
 
                 if not turn.target.is_alive() and not turn.target.death_reported:
                     self.announce_death(turn.target)
