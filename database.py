@@ -25,58 +25,55 @@ def verbinden():
         return None
 
 
+def fetch_all(connection, query, params=None):
+    with connection.cursor(dictionary=True) as cursor:
+        cursor.execute(query, params)
+        return cursor.fetchall()
+
+
 def get_data(connection, tabelle):
-    cursor = connection.cursor(dictionary=True)
-    cursor.execute(f"SELECT * FROM {tabelle}")
-    rows = cursor.fetchall()
-    return rows
+    query = f"SELECT * FROM {tabelle}"
+    return fetch_all(connection, query)
 
 
 def get_skills_for_classes(connection, class_id):
-    cursor = connection.cursor(dictionary=True)
     query = """
-        SELECT skills.*
-        FROM class_skills
-        JOIN skills ON class_skills.skill_id = skills.skill_id
-        WHERE class_skills.class_id = %s
-        """
-    cursor.execute(query, (class_id,))
-    return cursor.fetchall()
+            SELECT skills.*
+            FROM class_skills
+            JOIN skills ON class_skills.skill_id = skills.skill_id
+            WHERE class_skills.class_id = %s
+            """
+    return fetch_all(connection, query, (class_id,))
 
 
 def get_spells_for_classes(connection, class_id):
-    cursor = connection.cursor(dictionary=True)
     query = """
-        SELECT spells.*
-        FROM class_spells
-        JOIN spells ON class_spells.spell_id = spells.spell_id
-        WHERE class_spells.class_id = %s
-        """
-    cursor.execute(query, (class_id,))
-    return cursor.fetchall()
+            SELECT spells.*
+            FROM class_spells
+            JOIN spells ON class_spells.spell_id = spells.spell_id
+            WHERE class_spells.class_id = %s
+            """
+    return fetch_all(connection, query, (class_id,))
 
 
-def get_effects_for_skills(connection,skill_id):
-    cursor = connection.cursor(dictionary=True)
+def get_effects_for_skills(connection, skill_id):
     query = """
-        SELECT effects.*, skill_effects.effect_chance
-        FROM skill_effects
-        JOIN effects ON skill_effects.effect_id = effects.effects_id
-        WHERE skill_effects.skill_id = %s
-        """
-    cursor.execute(query, (skill_id,))
-    return cursor.fetchall()
+            SELECT effects.*, skill_effects.effect_chance
+            FROM skill_effects
+            JOIN effects ON skill_effects.effect_id = effects.effects_id
+            WHERE skill_effects.skill_id = %s
+            """
+    return fetch_all(connection, query, (skill_id,))
+
 
 def get_effects_for_spells(connection, spell_id):
-    cursor = connection.cursor(dictionary=True)
-    query= """
-        SELECT effects.*, spell_effects.effect_chance
-        FROM spell_effects
-        JOIN effects ON spell_effects.effect_id = effects.effects_id
-        WHERE spell_effects.spell_id = %s
-        """
-    cursor.execute(query, (spell_id,))
-    return cursor.fetchall()
+    query = """
+            SELECT effects.*, spell_effects.effect_chance
+            FROM spell_effects
+            JOIN effects ON spell_effects.effect_id = effects.effects_id
+            WHERE spell_effects.spell_id = %s
+            """
+    return fetch_all(connection, query, (spell_id,))
 
 
 def disconnect(connection):
