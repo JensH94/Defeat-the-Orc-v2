@@ -266,13 +266,3 @@ class Fight:
             self.announce_health()
 
             self.rounds += 1
-
-
-def build_player_group(character_classes):
-
-    player_group = []
-
-    player_group.append(character_classes[0])
-    player_group.append(character_classes[1])
-
-    return player_group

@@ -1,5 +1,6 @@
 from classes import Entity, Item, Weapon, Armor, Effects, Skill, Spell
 import random
+from print_style import slow_print, slow_input
 from database import (
     get_data,
     get_skills_for_classes,
@@ -85,6 +86,21 @@ def random_enemy_select(enemies_data):
     enemy_select_list = random.choices(enemies_data, k=random_enemy_count())
     return enemy_select_list
 
+def choose_player_class(character_classes):
+    while True:
+        slow_print(f"Choose a Class:\n")
+        for index, entity in enumerate(character_classes, start=1):
+            slow_print(f"{index} - {entity.name}")
+        try:
+            class_number = int(slow_input(f"Which Class do you choose?"))
+        except ValueError:
+            slow_print(f"Wrong number, please choose a number between 1 and {len(character_classes)}")
+            continue
+        if 1 <= class_number <= len(character_classes):
+            return [character_classes[class_number -1]]
+        else:
+            slow_print(f"Wrong number, please choose a number between 1 and {len(character_classes)}")
+
 
 def load_all(connection):
 
@@ -96,7 +112,6 @@ def load_all(connection):
     effects_data = get_data(connection, "effects")
 
     character_classes = build_classes(classes_data, connection)
-    enemies = build_enemies(enemies_data)
     items = build_items(items_data)
     weapons = build_weapons(weapons_data)
     armor = build_armor(armor_data)
