@@ -268,7 +268,7 @@ class Fight:
             self.rounds += 1
 
 
-def test_fight(character_classes):
+def build_player_group(character_classes):
 
     player_group = []
 
