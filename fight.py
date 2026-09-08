@@ -268,15 +268,11 @@ class Fight:
             self.rounds += 1
 
 
-def test_fight(character_classes, enemies):
+def test_fight(character_classes):
 
     player_group = []
-    enemy_group = []
 
     player_group.append(character_classes[0])
     player_group.append(character_classes[1])
 
-    enemy_group.append(enemies[0])
-    enemy_group.append(enemies[1])
-
-    return player_group, enemy_group
+    return player_group

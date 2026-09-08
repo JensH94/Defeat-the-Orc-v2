@@ -1,5 +1,5 @@
 from classes import Entity, Item, Weapon, Armor, Effects, Skill, Spell
-from random import random
+import random
 from database import (
     get_data,
     get_skills_for_classes,
@@ -81,6 +81,11 @@ def random_enemy_count():
     return random.randint(1, 3)
 
 
+def random_enemy_select(enemies_data):
+    enemy_select_list = random.choices(enemies_data, k=random_enemy_count())
+    return enemy_select_list
+
+
 def load_all(connection):
 
     classes_data = get_data(connection, "classes")
@@ -99,10 +104,10 @@ def load_all(connection):
 
     data_all = {
         "classes": character_classes,
-        "enemies": enemies,
         "items": items,
         "weapons": weapons,
         "armor": armor,
         "effects": effects,
+        "enemies_data": enemies_data,
     }
-    return data_all, enemies_data
+    return data_all

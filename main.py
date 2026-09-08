@@ -1,5 +1,5 @@
 from database import disconnect, verbinden
-from loader import load_all
+from loader import load_all, random_enemy_select, build_enemies
 from fight import Fight, test_fight
 
 connection = verbinden()
@@ -7,13 +7,13 @@ connection = verbinden()
 every_data = load_all(connection)
 
 
-
 disconnect(connection)
 
-player_data, enemy_data = test_fight(every_data["classes"], every_data["enemies"])
+player_group = test_fight(every_data["classes"])
+select_enemy = random_enemy_select(every_data["enemies_data"])
+enemy_group = build_enemies(select_enemy)
 
-
-fight_start = Fight(player_data, enemy_data)
+fight_start = Fight(player_group, enemy_group)
 
 fight_start.fight_loop()
 # print(Fight(player_data, enemy_data))
