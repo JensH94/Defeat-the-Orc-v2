@@ -24,6 +24,9 @@ class TurnChoice:
 def key_base_init(entity):
     return entity.base_initiative
 
+def roll_chance(chance) -> bool:
+        return random.randint(1, 100) <= chance
+
 
 class Fight:
     def __init__(self, player_group, enemy_group):
@@ -178,8 +181,6 @@ class Fight:
     def dmg_calculation(self, min_damage, max_damage) -> int:
         return random.randint(min_damage, max_damage)
 
-    def roll_chance(self, chance) -> bool:
-        return random.randint(1, 100) <= chance
 
     def announce_fight(self):
         palyer_names = ",".join(entity.name for entity in self.player_group)
@@ -245,7 +246,7 @@ class Fight:
 
                 if turn.action == Action.SKILLS or turn.action == Action.SPELLS:
                     for effect in effect_list:
-                        if self.roll_chance(effect.effect_chance):
+                        if roll_chance(effect.effect_chance):
                             turn.target.entity_effects.append(effect)
                             slow_print(
                                 f"{turn.target.name} is now affected by {effect.name}"

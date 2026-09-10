@@ -1,4 +1,8 @@
 from print_style import slow_print, slow_input
+from fight import Fight, roll_chance
+from loader import random_enemy_select, build_enemies
+
+ENCOUNTER_CHANCE = 30
 
 
 class Environment:
@@ -37,3 +41,12 @@ class Environment:
 
             else:
                 slow_print("Wrong number")
+
+    def waiting(self):
+        if roll_chance(ENCOUNTER_CHANCE):
+            select_enemy = random_enemy_select(self.enemies_data)
+            enemy_group = build_enemies(select_enemy)
+            fight_start = Fight(self.player_group, enemy_group)
+            fight_start.fight_loop()
+        else:
+            slow_print("Some time has passed")
