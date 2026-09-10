@@ -1,6 +1,8 @@
 forest = {
     "room_1": {
+        "name": "",
         "description": "A dense forest, light shines through the treetops",
+        "details": "",
         "exit": {
             "back": "exit_environment",
             "left": "room_2",

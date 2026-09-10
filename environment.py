@@ -50,3 +50,7 @@ class Environment:
             fight_start.fight_loop()
         else:
             slow_print("Some time has passed")
+
+    def exploring_menu(self):
+        while True:
+            slow_print(f"")
