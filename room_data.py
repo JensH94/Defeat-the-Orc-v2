@@ -1,8 +1,8 @@
 forest = {
     "room_1": {
-        "name": "",
+        "name": "Forest Edge",
         "description": "A dense forest, light shines through the treetops",
-        "details": "",
+        "details": "The forest entrance spans an uneven, stony surface dotted with flowers and surrounded by grass.You see a path to the left, a small, worn trail to the right, and the forest opening up before you.",
         "exit": {
             "back": "exit_environment",
             "left": "room_2",

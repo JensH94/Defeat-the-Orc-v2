@@ -3,7 +3,7 @@ from fight import Fight, roll_chance
 from loader import random_enemy_select, build_enemies
 
 ENCOUNTER_CHANCE = 30
-
+MENU_OPTIONS = ["Move on", "Look around", "Wait"]
 
 class Environment:
     def __init__(self, rooms, player_group, enemies_data):
@@ -36,8 +36,9 @@ class Environment:
                 room_target = room["exit"][room_choice]
 
                 if room_target == "exit_environment":
-                    break
+                    return True
                 self.current_room = room_target
+                return
 
             else:
                 slow_print("Wrong number")
@@ -51,6 +52,19 @@ class Environment:
         else:
             slow_print("Some time has passed")
 
+    def look(self):
+        room = self.rooms[self.current_room]
+        slow_print(f"You are investigating the {room['name']}")
+        slow_print(room["details"])
+        directions = ", ".join(room["exit"])
+        slow_print(f"Paths lead: {directions}")
+    
     def exploring_menu(self):
         while True:
-            slow_print(f"")
+            room = self.rooms[self.current_room]
+            slow_print(room["description"])
+            for index, option in enumerate(MENU_OPTIONS, start=1):
+                slow_print(f"{index} - {option}")
+            if self.room_movement():
+                break
+            
