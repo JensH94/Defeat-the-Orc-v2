@@ -13,4 +13,4 @@ disconnect(connection)
 
 player_group = choose_player_class(every_data["classes"])
 environment = Environment(forest, player_group, every_data["enemies_data"])
-environment.room_movement()
+environment.exploring_menu()
