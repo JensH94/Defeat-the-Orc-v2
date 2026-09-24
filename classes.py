@@ -16,9 +16,9 @@ class Entity:
         self.current_initiative: int = self.base_initiative
         self.unarmed_min_damage: int = daten.get("unarmed_min_damage", 1)
         self.unarmed_max_damage: int = daten.get("unarmed_max_damage", 3)
-        self.base_crit_chance: float = daten.get("base_crit_chance", 0.01)
+        self.base_crit_chance: float = daten.get("base_crit_chance", 1)
         self.current_crit_chance: float = self.base_crit_chance
-        self.base_hit_chance: float = daten.get("base_hit_chance", 0.97)
+        self.base_hit_chance: float = daten.get("base_hit_chance", 97)
         self.current_hit_chance: float = self.base_hit_chance
         self.entity_effects: list = []
         self.entity_spells: list = []
@@ -53,6 +53,12 @@ class Entity:
     def resource_reset(self):
         if self.resource_type == "rage":
             self.current_resource = 0
+
+    def find_effect(self, effects_id) -> Effects | None:
+        for effect in self.entity_effects:
+            if effect.effects_id == effects_id:
+                return effect
+        return None
 
     def __repr__(self) -> str:
         return f"Entity ({self.name} | HP: {self.base_health} | Mana: {self.base_resource} | Initiative: {self.base_initiative})"

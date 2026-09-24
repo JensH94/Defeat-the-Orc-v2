@@ -2,9 +2,10 @@ from print_style import slow_print, slow_input
 from fight import Fight, FightResult, roll_chance
 from loader import random_enemy_select, build_enemies
 from enum import Enum
+from display import show_status
 
 ENCOUNTER_CHANCE = 30
-MENU_OPTIONS = ["Move on", "Look around", "Wait"]
+MENU_OPTIONS = ["Move on", "Look around", "Wait", "Status"]
 
 class ExploreResult(Enum):
     GAME_OVER = "game_over"
@@ -87,3 +88,7 @@ class Environment:
             elif menu_option == 3:
                 if self.waiting() == FightResult.DEFEAT:
                     return ExploreResult.GAME_OVER
+            elif menu_option == 4:
+                show_status(self.player_group, "Party")
+            else:
+                slow_print("Wrong number")

@@ -3,9 +3,11 @@ from classes import Entity, Skill, Spell
 from print_style import slow_print, slow_input
 from enum import Enum
 from dataclasses import dataclass
+from display import show_status
 
 RAGE_HIT_FACTOR = 0.2
 RAGE_TICK_FACTOR = 0.1
+CRIT_HIT_FACTOR = 2
 
 
 class Action(Enum):
@@ -52,6 +54,16 @@ class Fight:
 
     def announce_death(self, entity):
         slow_print(f"{entity.name} died")
+
+    def roll_hit(self, entity):
+        return roll_chance(entity.current_hit_chance)
+        
+
+    def roll_crit(self, entity):
+        return roll_chance(entity.current_crit_chance)
+
+    def apply_crit(self, damage):
+        return round(damage * CRIT_HIT_FACTOR)
 
     def choose_action(self, entity) -> Action:
 
@@ -202,14 +214,6 @@ class Fight:
                 self.announce_death(entity)
                 entity.death_reported = True
 
-    def announce_health(self):
-        slow_print("Current Health:")
-
-        for entity in self.turn_order:
-            slow_print(
-                f"Name:{entity.name} HP:{entity.current_health} {entity.resource_type}:{entity.current_resource}"
-            )
-
     def reset_player_resource(self):
         for player in self.player_group:
             player.resource_reset()
@@ -239,6 +243,11 @@ class Fight:
                 else:
                     turn = self.enemy_turn(entity)
                 if turn.action == Action.ATTACK:
+                    entity.resource_generation(int(entity.max_resource * RAGE_HIT_FACTOR))
+                if not self.roll_hit(entity):
+                    slow_print(f"{entity.name} misses {turn.target.name}")
+                    continue
+                if turn.action == Action.ATTACK:
                     damage = self.dmg_calculation(
                         entity.unarmed_min_damage, entity.unarmed_max_damage
                     )
@@ -247,7 +256,9 @@ class Fight:
                         turn.ability.min_damage, turn.ability.max_damage
                     )
 
-                entity.resource_generation(int(entity.max_resource * RAGE_HIT_FACTOR))
+                if self.roll_crit(entity):
+                    damage = self.apply_crit(damage)
+                    slow_print(f"{entity.name} crits against {turn.target.name}")
                 turn.target.current_health = max(0, turn.target.current_health - damage)
                 slow_print(
                     f"{turn.target.name} takes {damage} damage from {entity.name}"
@@ -256,10 +267,15 @@ class Fight:
                     effect_list = turn.ability.create_effects()
                     for effect in effect_list:
                         if roll_chance(effect.effect_chance):
-                            turn.target.entity_effects.append(effect)
-                            slow_print(
-                                f"{turn.target.name} is now affected by {effect.name}"
-                            )
+                            same_effect = turn.target.find_effect(effect.effects_id)
+                            if same_effect:
+                                same_effect.effects_duration = effect.effects_duration
+                                slow_print(f"{effect.name} refreshed")
+                            else:
+                                turn.target.entity_effects.append(effect)
+                                slow_print(
+                                    f"{turn.target.name} is now affected by {effect.name}"
+                                )
 
                 if not turn.target.is_alive() and not turn.target.death_reported:
                     self.announce_death(turn.target)
@@ -272,7 +288,8 @@ class Fight:
                     break
 
             self.tick_phase()
-            self.announce_health()
+            show_status(self.player_group, "Party")
+            show_status(self.enemy_group, "Enemies", show_resource=False)
 
             
 
