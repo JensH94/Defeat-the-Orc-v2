@@ -1,5 +1,4 @@
 import random
-from print_style import slow_print
 
 
 class Entity:
@@ -50,6 +49,10 @@ class Entity:
 
     def is_alive(self):
         return self.current_health > 0
+
+    def resource_reset(self):
+        if self.resource_type == "rage":
+            self.current_resource = 0
 
     def __repr__(self) -> str:
         return f"Entity ({self.name} | HP: {self.base_health} | Mana: {self.base_resource} | Initiative: {self.base_initiative})"
@@ -122,7 +125,13 @@ class Skill:
         self.min_damage: int = daten.get("min_damage", 0)
         self.max_damage: int = daten.get("max_damage", 0)
         self.resource_cost: int = daten.get("resource_cost", 0)
-        self.skill_effects: list = []
+        self.effect_data: list[dict] = []
+
+    def create_effects(self):
+        effects = []
+        for zeile in self.effect_data:
+            effects.append(Effects(zeile))
+        return effects
 
     def __repr__(self):
         return f"Skill ({self.name} | min damage:{self.min_damage} | max damage:{self.max_damage} | resource cost:{self.resource_cost})"
@@ -136,7 +145,13 @@ class Spell:
         self.min_damage: int = daten.get("min_damage", 0)
         self.max_damage: int = daten.get("max_damage", 0)
         self.resource_cost: int = daten.get("resource_cost", 0)
-        self.spell_effects: list = []
+        self.effect_data: list[dict] = []
+
+    def create_effects(self):
+        effects = []
+        for zeile in self.effect_data:
+            effects.append(Effects(zeile))
+        return effects
 
     def __repr__(self):
         return f"Spell ({self.name} | min damage:{self.min_damage} | max damage:{self.max_damage} | resource cost:{self.resource_cost})"

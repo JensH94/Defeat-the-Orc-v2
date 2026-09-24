@@ -1,4 +1,4 @@
-from classes import Entity, Item, Weapon, Armor, Effects, Skill, Spell
+from classes import Entity, Item, Weapon, Armor, Skill, Spell
 import random
 from print_style import slow_print, slow_input
 from database import (
@@ -50,20 +50,12 @@ def build_armor(armor_data):
         armor.append(Armor(zeile))
     return armor
 
-
-def build_effects(effects_data):
-    effects = []
-    for zeile in effects_data:
-        effects.append(Effects(zeile))
-    return effects
-
-
 def build_skills(skills_data, connection):
     skills = []
     for zeile in skills_data:
         skill = Skill(zeile)
         effects_data = get_effects_for_skills(connection, skill.skill_id)
-        skill.skill_effects = build_effects(effects_data)
+        skill.effect_data = effects_data
         skills.append(skill)
     return skills
 
@@ -73,7 +65,7 @@ def build_spells(spells_data, connection):
     for zeile in spells_data:
         spell = Spell(zeile)
         effects_data = get_effects_for_spells(connection, spell.spell_id)
-        spell.spell_effects = build_effects(effects_data)
+        spell.effect_data = effects_data
         spells.append(spell)
     return spells
 
@@ -109,20 +101,17 @@ def load_all(connection):
     items_data = get_data(connection, "items")
     weapons_data = get_data(connection, "weapons")
     armor_data = get_data(connection, "armor")
-    effects_data = get_data(connection, "effects")
 
     character_classes = build_classes(classes_data, connection)
     items = build_items(items_data)
     weapons = build_weapons(weapons_data)
     armor = build_armor(armor_data)
-    effects = build_effects(effects_data)
 
     data_all = {
         "classes": character_classes,
         "items": items,
         "weapons": weapons,
         "armor": armor,
-        "effects": effects,
         "enemies_data": enemies_data,
     }
     return data_all

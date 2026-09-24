@@ -13,6 +13,9 @@ class Action(Enum):
     SKILLS = "Skills"
     SPELLS = "Spells"
 
+class FightResult(Enum):
+    VICTORY = "Victory"
+    DEFEAT = "Defeat"
 
 @dataclass
 class TurnChoice:
@@ -207,7 +210,17 @@ class Fight:
                 f"Name:{entity.name} HP:{entity.current_health} {entity.resource_type}:{entity.current_resource}"
             )
 
-    def fight_loop(self) -> None:
+    def reset_player_resource(self):
+        for player in self.player_group:
+            player.resource_reset()
+
+    def fight_result(self) -> FightResult:
+        if self.health_check(self.player_group):
+            return FightResult.VICTORY
+        return FightResult.DEFEAT
+
+
+    def fight_loop(self) -> FightResult:
 
         self.announce_fight()
 
@@ -239,12 +252,8 @@ class Fight:
                 slow_print(
                     f"{turn.target.name} takes {damage} damage from {entity.name}"
                 )
-                if turn.action == Action.SKILLS:
-                    effect_list = turn.ability.skill_effects
-                elif turn.action == Action.SPELLS:
-                    effect_list = turn.ability.spell_effects
-
                 if turn.action == Action.SKILLS or turn.action == Action.SPELLS:
+                    effect_list = turn.ability.create_effects()
                     for effect in effect_list:
                         if roll_chance(effect.effect_chance):
                             turn.target.entity_effects.append(effect)
@@ -263,7 +272,11 @@ class Fight:
                     break
 
             self.tick_phase()
-
             self.announce_health()
 
+            
+
             self.rounds += 1
+
+        self.reset_player_resource()
+        return self.fight_result()

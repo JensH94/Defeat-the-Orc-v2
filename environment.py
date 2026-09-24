@@ -1,9 +1,14 @@
 from print_style import slow_print, slow_input
-from fight import Fight, roll_chance
+from fight import Fight, FightResult, roll_chance
 from loader import random_enemy_select, build_enemies
+from enum import Enum
 
 ENCOUNTER_CHANCE = 30
 MENU_OPTIONS = ["Move on", "Look around", "Wait"]
+
+class ExploreResult(Enum):
+    GAME_OVER = "game_over"
+    LEFT = "left"
 
 
 class Environment:
@@ -48,14 +53,14 @@ class Environment:
             else:
                 slow_print("Wrong number")
 
-    def waiting(self):
+    def waiting(self) -> FightResult | None:
         if roll_chance(ENCOUNTER_CHANCE):
             select_enemy = random_enemy_select(self.enemies_data)
             enemy_group = build_enemies(select_enemy)
             fight_start = Fight(self.player_group, enemy_group)
-            fight_start.fight_loop()
-        else:
-            slow_print("Some time has passed")
+            return fight_start.fight_loop()
+        slow_print("Some time has passed")
+        return None
 
     def look(self):
         room = self.rooms[self.current_room]
@@ -76,10 +81,9 @@ class Environment:
                 continue
             if menu_option == 1:
                 if self.room_movement():
-                    break
+                    return ExploreResult.LEFT
             elif menu_option == 2:
                 self.look()
             elif menu_option == 3:
-                self.waiting()
-            else:
-                slow_print(f"Choose a number between 1 and {len(MENU_OPTIONS)}")
+                if self.waiting() == FightResult.DEFEAT:
+                    return ExploreResult.GAME_OVER

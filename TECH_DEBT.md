@@ -9,4 +9,3 @@ Tech-Debt:
 - **repr** wird zu testzwecken immer mal umgeschrieben ("dauerdebt")
 - try/int(input)/range-check -> helper-function
 - with connection.cursor() -> Context Manager für sauberkeit
-- load_all -> Standalone = Effects -> entfernen
