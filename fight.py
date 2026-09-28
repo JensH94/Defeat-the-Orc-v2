@@ -8,16 +8,18 @@ from display import show_status
 RAGE_HIT_FACTOR = 0.2
 RAGE_TICK_FACTOR = 0.1
 CRIT_HIT_FACTOR = 2
-
+MANA_REGEN_RANGE = (0.1, 0.15)
 
 class Action(Enum):
     ATTACK = "Attack"
     SKILLS = "Skills"
     SPELLS = "Spells"
+    RUN = "Run"
 
 class FightResult(Enum):
     VICTORY = "Victory"
     DEFEAT = "Defeat"
+    RUN = "Run"
 
 @dataclass
 class TurnChoice:
@@ -31,6 +33,10 @@ def key_base_init(entity):
 
 def roll_chance(chance) -> bool:
         return random.randint(1, 100) <= chance
+
+def roll_range(value_range):
+    low, high = value_range
+    return random.uniform(low, high)
 
 
 class Fight:
@@ -65,6 +71,7 @@ class Fight:
     def apply_crit(self, damage):
         return round(damage * CRIT_HIT_FACTOR)
 
+            
     def choose_action(self, entity) -> Action:
 
         choices = []
@@ -74,6 +81,7 @@ class Fight:
             choices.append(Action.SKILLS)
         if entity.entity_spells:
             choices.append(Action.SPELLS)
+        choices.append(Action.RUN)
 
         while True:
             for index, action in enumerate(choices, start=1):
@@ -98,7 +106,7 @@ class Fight:
                 target_group.append(entity)
 
         while True:
-            slow_print("-- Available Targets--")
+            slow_print("-- Available Targets --")
             for index, entity in enumerate(target_group, start=1):
                 slow_print(f"{index} - {entity.name}")
 
@@ -163,6 +171,8 @@ class Fight:
         while True:
             if step == "action":
                 action = self.choose_action(entity)
+                if action == Action.RUN:
+                    return FightResult.RUN
                 if action == Action.ATTACK:
                     step = "target"
                 else:
@@ -217,6 +227,8 @@ class Fight:
     def reset_player_resource(self):
         for player in self.player_group:
             player.resource_reset()
+            regen_factor = roll_range(MANA_REGEN_RANGE)
+            player.mana_regeneration(int(player.max_resource * regen_factor))
 
     def fight_result(self) -> FightResult:
         if self.health_check(self.player_group):
@@ -232,7 +244,7 @@ class Fight:
             self.enemy_group
         ):
 
-            slow_print(f"\n------ Round: {self.rounds} ------")
+            slow_print(f"\n-- Round: {self.rounds} --\n")
 
             for entity in self.turn_order:
                 if not entity.is_alive():
@@ -240,6 +252,8 @@ class Fight:
                 slow_print(f"{entity.name}s turn: ")
                 if entity in self.player_group:
                     turn = self.choose_turn(entity)
+                    if turn == FightResult.RUN:
+                        return FightResult.RUN
                 else:
                     turn = self.enemy_turn(entity)
                 if turn.action == Action.ATTACK:

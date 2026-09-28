@@ -40,6 +40,10 @@ class Entity:
                 self.max_resource, self.current_resource + resource_value
             )
 
+    def mana_regeneration(self, resource_value):
+        if self.resource_type == "mana":
+            self.current_resource = min(self.max_resource, self.current_resource + resource_value)
+
     def resource_spending(self, resource_cost):
         if self.current_resource >= resource_cost:
             self.current_resource = self.current_resource - resource_cost

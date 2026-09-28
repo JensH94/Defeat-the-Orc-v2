@@ -5,7 +5,9 @@ from enum import Enum
 from display import show_status
 
 ENCOUNTER_CHANCE = 30
-MENU_OPTIONS = ["Move on", "Look around", "Wait", "Status"]
+MENU_OPTIONS = ["Move on", "Look around", "Wait", "Status", "Rest"]
+REST_HEALTH_FACTOR = 0.40
+REST_MANA_FACTOR = 0.30
 
 class ExploreResult(Enum):
     GAME_OVER = "game_over"
@@ -38,7 +40,7 @@ class Environment:
             try:
                 number = int(slow_input("Choose\n"))
             except ValueError:
-                slow_print("Not number")
+                slow_print("Not a number")
                 continue
 
             if 1 <= number <= len(directions):
@@ -70,6 +72,13 @@ class Environment:
         directions = ", ".join(room["exit"])
         slow_print(f"Paths lead: {directions}")
 
+    def rest(self):
+        for player in self.player_group:
+            player.current_health = min(player.base_health, player.current_health + int(player.base_health * REST_HEALTH_FACTOR))
+            if player.resource_type == "mana":
+                player.current_resource = min(player.max_resource, player.current_resource + int(player.max_resource * REST_MANA_FACTOR))
+        slow_print("You find a spot to rest for a bit.\nYou feel rested.")
+
     def exploring_menu(self):
         self.room_description()
         while True:
@@ -78,7 +87,7 @@ class Environment:
             try:
                 menu_option = int(slow_input("\nWhat do you want to do?\n"))
             except ValueError:
-                slow_print(f"Choose an option between 1 and {len(MENU_OPTIONS)}")
+                slow_print(f"Choose an option between 1 and {len(MENU_OPTIONS)}\n")
                 continue
             if menu_option == 1:
                 if self.room_movement():
@@ -86,9 +95,14 @@ class Environment:
             elif menu_option == 2:
                 self.look()
             elif menu_option == 3:
-                if self.waiting() == FightResult.DEFEAT:
+                result = self.waiting()
+                if result == FightResult.DEFEAT:
                     return ExploreResult.GAME_OVER
+                if result == FightResult.RUN:
+                    slow_print("You got away!")
             elif menu_option == 4:
                 show_status(self.player_group, "Party")
+            elif menu_option == 5:
+                self.rest()
             else:
                 slow_print("Wrong number")

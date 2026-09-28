@@ -80,18 +80,18 @@ def random_enemy_select(enemies_data):
 
 def choose_player_class(character_classes):
     while True:
-        slow_print(f"Choose a Class:\n")
+        slow_print(f"\nChoose a Class:\n")
         for index, entity in enumerate(character_classes, start=1):
             slow_print(f"{index} - {entity.name}")
         try:
-            class_number = int(slow_input(f"Which Class do you choose?"))
+            class_number = int(slow_input(f"\nWhich Class do you choose?\n"))
         except ValueError:
-            slow_print(f"Wrong number, please choose a number between 1 and {len(character_classes)}")
+            slow_print(f"Wrong number, please choose a number between 1 and {len(character_classes)}\n")
             continue
         if 1 <= class_number <= len(character_classes):
             return [character_classes[class_number -1]]
         else:
-            slow_print(f"Wrong number, please choose a number between 1 and {len(character_classes)}")
+            slow_print(f"Wrong number, please choose a number between 1 and {len(character_classes)}\n")
 
 
 def load_all(connection):
