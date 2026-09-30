@@ -8,4 +8,3 @@ Tech-Debt:
 - entity_id wird vom Loader gesetzt statt im Konstruktor, später als Parameter
 - **repr** wird zu testzwecken immer mal umgeschrieben ("dauerdebt")
 - try/int(input)/range-check -> helper-function
-- with connection.cursor() -> Context Manager für sauberkeit

@@ -58,10 +58,7 @@ class Environment:
 
     def waiting(self) -> FightResult | None:
         if roll_chance(ENCOUNTER_CHANCE):
-            select_enemy = random_enemy_select(self.enemies_data)
-            enemy_group = build_enemies(select_enemy)
-            fight_start = Fight(self.player_group, enemy_group)
-            return fight_start.fight_loop()
+            return self.start_encounter()
         slow_print("Some time has passed")
         return None
 
@@ -106,3 +103,10 @@ class Environment:
                 self.rest()
             else:
                 slow_print("Wrong number")
+
+
+    def start_encounter(self):
+        select_enemy = random_enemy_select(self.enemies_data)
+        enemy_group = build_enemies(select_enemy)
+        fight_start = Fight(self.player_group, enemy_group)
+        return fight_start.fight_loop()
