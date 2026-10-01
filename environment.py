@@ -20,6 +20,8 @@ class Environment:
         self.player_group: list = player_group
         self.enemies_data: list = enemies_data
         self.current_room: str = "room_1"
+        self.encounter_rooms: set = set()
+        self.roll_encounter_rooms()
 
     def room_description(self):
         room = self.rooms[self.current_room]
@@ -50,8 +52,7 @@ class Environment:
                 if room_target == "exit_environment":
                     return True
                 self.current_room = room_target
-                self.room_description()
-                return
+                return self.enter_room()
 
             else:
                 slow_print("Wrong number")
@@ -87,8 +88,13 @@ class Environment:
                 slow_print(f"Choose an option between 1 and {len(MENU_OPTIONS)}\n")
                 continue
             if menu_option == 1:
-                if self.room_movement():
+                result = self.room_movement()
+                if result == ExploreResult.LEFT:
                     return ExploreResult.LEFT
+                elif result == FightResult.DEFEAT:
+                    return ExploreResult.GAME_OVER
+                elif result == FightResult.RUN:
+                    slow_print("You got away!")
             elif menu_option == 2:
                 self.look()
             elif menu_option == 3:
@@ -110,3 +116,17 @@ class Environment:
         enemy_group = build_enemies(select_enemy)
         fight_start = Fight(self.player_group, enemy_group)
         return fight_start.fight_loop()
+
+    def roll_encounter_rooms(self):
+        for room_key,room_data in self.rooms.items():
+            chance = room_data.get("encounter_chance", 0)
+            if roll_chance(chance):
+                self.encounter_rooms.add(room_key)
+
+    def enter_room(self) -> FightResult | None:
+        self.room_description()
+        if self.current_room in self.encounter_rooms:
+            result = self.start_encounter()
+            self.encounter_rooms.discard(self.current_room)
+            return result
+        return None
