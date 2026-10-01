@@ -98,7 +98,7 @@ class Fight:
             else:
                 slow_print(f"Wrong number, pick a number from {len(choices)}")
 
-    def player_choice(self, entity_group) -> Entity:
+    def player_choice(self, entity_group) -> Entity | None:
 
         target_group = []
         for entity in entity_group:
@@ -109,7 +109,7 @@ class Fight:
             slow_print("-- Available Targets --")
             for index, entity in enumerate(target_group, start=1):
                 slow_print(f"{index} - {entity.name}")
-
+            slow_print("0 - Back")
             try:
                 target_number = int(slow_input("Choose a Target\n"))
             except ValueError:
@@ -117,7 +117,8 @@ class Fight:
                     f"Not a number, please choose a number between 1 and {len(target_group)}"
                 )
                 continue
-
+            if target_number == 0:
+                return None
             if target_number >= 1 and target_number <= len(target_group):
                 target = target_group[target_number - 1]
                 return target
