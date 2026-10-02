@@ -127,7 +127,7 @@ class Fight:
                     f"Wrong number, please choose a number between 1 and {len(target_group)}"
                 )
 
-    def choose_ability(self, ability_list, entity):
+    def choose_ability(self, ability_list, entity) -> Skill | Spell | None:
         while True:
             slow_print(f" Choose an ability\n")
             for index, ability in enumerate(ability_list, start=1):
@@ -146,7 +146,7 @@ class Fight:
                 return None
             elif 1 <= number <= len(ability_list):
                 selected = ability_list[number - 1]
-                if entity.resource_spending(selected.resource_cost):
+                if entity.enough_resource(selected.resource_cost):
                     return selected
                 else:
                     slow_print("Not enough resource")
@@ -259,6 +259,8 @@ class Fight:
                     turn = self.enemy_turn(entity)
                 if turn.action == Action.ATTACK:
                     entity.resource_generation(int(entity.max_resource * RAGE_HIT_FACTOR))
+                if turn.action in (Action.SKILLS, Action.SPELLS):
+                    entity.resource_spending(turn.ability.resource_cost)
                 if not self.roll_hit(entity):
                     slow_print(f"{entity.name} misses {turn.target.name}")
                     continue

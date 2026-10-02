@@ -44,12 +44,11 @@ class Entity:
         if self.resource_type == "mana":
             self.current_resource = min(self.max_resource, self.current_resource + resource_value)
 
+    def enough_resource(self, resource_cost):
+        return self.current_resource >= resource_cost
+
     def resource_spending(self, resource_cost):
-        if self.current_resource >= resource_cost:
-            self.current_resource = self.current_resource - resource_cost
-            return True
-        else:
-            return False
+        self.current_resource = self.current_resource - resource_cost
 
     def is_alive(self):
         return self.current_health > 0
