@@ -9,6 +9,7 @@ MENU_OPTIONS = ["Move on", "Look around", "Wait", "Status", "Rest"]
 REST_HEALTH_FACTOR = 0.40
 REST_MANA_FACTOR = 0.30
 
+
 class ExploreResult(Enum):
     GAME_OVER = "game_over"
     LEFT = "left"
@@ -31,6 +32,7 @@ class Environment:
         room = self.rooms[self.current_room]
         for index, direction in enumerate(room["exit"], start=1):
             slow_print(f"{index} - {direction}")
+        slow_print("0 - Cancel")
 
     def room_movement(self):
         while True:
@@ -45,12 +47,14 @@ class Environment:
                 slow_print("Not a number")
                 continue
 
+            if number == 0:
+                return None
             if 1 <= number <= len(directions):
                 room_choice = directions[number - 1]
                 room_target = room["exit"][room_choice]
 
                 if room_target == "exit_environment":
-                    return True
+                    return ExploreResult.LEFT
                 self.current_room = room_target
                 return self.enter_room()
 
@@ -72,9 +76,16 @@ class Environment:
 
     def rest(self):
         for player in self.player_group:
-            player.current_health = min(player.base_health, player.current_health + int(player.base_health * REST_HEALTH_FACTOR))
+            player.current_health = min(
+                player.base_health,
+                player.current_health + int(player.base_health * REST_HEALTH_FACTOR),
+            )
             if player.resource_type == "mana":
-                player.current_resource = min(player.max_resource, player.current_resource + int(player.max_resource * REST_MANA_FACTOR))
+                player.current_resource = min(
+                    player.max_resource,
+                    player.current_resource
+                    + int(player.max_resource * REST_MANA_FACTOR),
+                )
         slow_print("You find a spot to rest for a bit.\nYou feel rested.")
 
     def exploring_menu(self):
@@ -110,7 +121,6 @@ class Environment:
             else:
                 slow_print("Wrong number")
 
-
     def start_encounter(self):
         select_enemy = random_enemy_select(self.enemies_data)
         enemy_group = build_enemies(select_enemy)
@@ -118,7 +128,7 @@ class Environment:
         return fight_start.fight_loop()
 
     def roll_encounter_rooms(self):
-        for room_key,room_data in self.rooms.items():
+        for room_key, room_data in self.rooms.items():
             chance = room_data.get("encounter_chance", 0)
             if roll_chance(chance):
                 self.encounter_rooms.add(room_key)
