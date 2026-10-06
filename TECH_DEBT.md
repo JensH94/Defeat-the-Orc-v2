@@ -8,3 +8,4 @@ Tech-Debt:
 - entity_id wird vom Loader gesetzt statt im Konstruktor, später als Parameter
 - **repr** wird zu testzwecken immer mal umgeschrieben ("dauerdebt")
 - try/int(input)/range-check -> helper-function
+- umbenennung der environment directions
