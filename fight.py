@@ -10,16 +10,20 @@ RAGE_TICK_FACTOR = 0.1
 CRIT_HIT_FACTOR = 2
 MANA_REGEN_RANGE = (0.1, 0.15)
 
+
 class Action(Enum):
     ATTACK = "Attack"
     SKILLS = "Skills"
     SPELLS = "Spells"
     RUN = "Run"
+    STATUS = "Status"
+
 
 class FightResult(Enum):
     VICTORY = "Victory"
     DEFEAT = "Defeat"
     RUN = "Run"
+
 
 @dataclass
 class TurnChoice:
@@ -31,8 +35,10 @@ class TurnChoice:
 def key_base_init(entity):
     return entity.base_initiative
 
+
 def roll_chance(chance) -> bool:
-        return random.randint(1, 100) <= chance
+    return random.randint(1, 100) <= chance
+
 
 def roll_range(value_range):
     low, high = value_range
@@ -63,7 +69,6 @@ class Fight:
 
     def roll_hit(self, entity):
         return roll_chance(entity.current_hit_chance)
-        
 
     def roll_crit(self, entity):
         return roll_chance(entity.current_crit_chance)
@@ -71,7 +76,6 @@ class Fight:
     def apply_crit(self, damage):
         return round(damage * CRIT_HIT_FACTOR)
 
-            
     def choose_action(self, entity) -> Action:
 
         choices = []
@@ -82,6 +86,7 @@ class Fight:
         if entity.entity_spells:
             choices.append(Action.SPELLS)
         choices.append(Action.RUN)
+        choices.append(Action.STATUS)
 
         while True:
             for index, action in enumerate(choices, start=1):
@@ -174,6 +179,10 @@ class Fight:
                 action = self.choose_action(entity)
                 if action == Action.RUN:
                     return FightResult.RUN
+                if action == Action.STATUS:
+                    show_status(self.player_group, "Party")
+                    show_status(self.enemy_group, "Enemies", show_resource=False)
+                    continue
                 if action == Action.ATTACK:
                     step = "target"
                 else:
@@ -207,7 +216,6 @@ class Fight:
     def dmg_calculation(self, min_damage, max_damage) -> int:
         return random.randint(min_damage, max_damage)
 
-
     def announce_fight(self):
         palyer_names = ",".join(entity.name for entity in self.player_group)
         enemy_names = ",".join(entity.name for entity in self.enemy_group)
@@ -236,7 +244,6 @@ class Fight:
             return FightResult.VICTORY
         return FightResult.DEFEAT
 
-
     def fight_loop(self) -> FightResult:
 
         self.announce_fight()
@@ -258,7 +265,9 @@ class Fight:
                 else:
                     turn = self.enemy_turn(entity)
                 if turn.action == Action.ATTACK:
-                    entity.resource_generation(int(entity.max_resource * RAGE_HIT_FACTOR))
+                    entity.resource_generation(
+                        int(entity.max_resource * RAGE_HIT_FACTOR)
+                    )
                 if turn.action in (Action.SKILLS, Action.SPELLS):
                     entity.resource_spending(turn.ability.resource_cost)
                 if not self.roll_hit(entity):
@@ -307,8 +316,6 @@ class Fight:
             self.tick_phase()
             show_status(self.player_group, "Party")
             show_status(self.enemy_group, "Enemies", show_resource=False)
-
-            
 
             self.rounds += 1
 
