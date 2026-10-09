@@ -4,7 +4,7 @@ Defeat the Orc ist ein Schüler- und Lernprojekt welches den Fokus hat von Grund
 
 ## Status
 
-Grundgerüst des Kampfes läuft. Als Nächstes das Kampfsystem erweitern und Räume und Umgebung hinzufügen.
+Grundgerüst des Kampfes, erste Umgebung und Räume laufen. Als Nächstes das Kampfsystem erweitern.
 
 ## Tech-Stack
 

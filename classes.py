@@ -16,10 +16,10 @@ class Entity:
         self.current_initiative: int = self.base_initiative
         self.unarmed_min_damage: int = daten.get("unarmed_min_damage", 1)
         self.unarmed_max_damage: int = daten.get("unarmed_max_damage", 3)
-        self.base_crit_chance: float = daten.get("base_crit_chance", 1)
-        self.current_crit_chance: float = self.base_crit_chance
-        self.base_hit_chance: float = daten.get("base_hit_chance", 97)
-        self.current_hit_chance: float = self.base_hit_chance
+        self.base_crit_chance: int = daten.get("base_crit_chance", 1)
+        self.current_crit_chance: int = self.base_crit_chance
+        self.base_hit_chance: int = daten.get("base_hit_chance", 97)
+        self.current_hit_chance: int = self.base_hit_chance
         self.entity_effects: list = []
         self.entity_spells: list = []
         self.entity_skills: list = []
@@ -42,7 +42,9 @@ class Entity:
 
     def mana_regeneration(self, resource_value):
         if self.resource_type == "mana":
-            self.current_resource = min(self.max_resource, self.current_resource + resource_value)
+            self.current_resource = min(
+                self.max_resource, self.current_resource + resource_value
+            )
 
     def enough_resource(self, resource_cost):
         return self.current_resource >= resource_cost

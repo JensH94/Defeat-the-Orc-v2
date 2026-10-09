@@ -233,9 +233,12 @@ class Fight:
                 self.announce_death(entity)
                 entity.death_reported = True
 
-    def reset_player_resource(self):
+    def reset_player_rage(self):
         for player in self.player_group:
             player.resource_reset()
+
+    def player_mana_regeneration(self):
+        for player in self.player_group:
             regen_factor = roll_range(MANA_REGEN_RANGE)
             player.mana_regeneration(int(player.max_resource * regen_factor))
 
@@ -261,6 +264,7 @@ class Fight:
                 if entity in self.player_group:
                     turn = self.choose_turn(entity)
                     if turn == FightResult.RUN:
+                        self.reset_player_rage()
                         return FightResult.RUN
                 else:
                     turn = self.enemy_turn(entity)
@@ -319,5 +323,6 @@ class Fight:
 
             self.rounds += 1
 
-        self.reset_player_resource()
+        self.reset_player_rage()
+        self.player_mana_regeneration()
         return self.fight_result()
