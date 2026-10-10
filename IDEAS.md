@@ -6,33 +6,32 @@ Ideas:
 
 - Kampflog (später im Interface-Teil)
 - Schild-als-Waffe-Mechanik (Balancing, Voraussetzung M4):
-- Schilde als Einhand-Waffen, können angreifen (Shieldbash)
-- Block-Wert + Verteidigung → Schadenswerte umrechnen (Formel TBD)
-- Offhand-Waffen ohne Klassen-Talent abgeschwächt (Standard-Dual-Wield)
+  - Schilde als Einhand-Waffen, können angreifen (Shieldbash)
+  - Block-Wert + Verteidigung → Schadenswerte umrechnen (Formel TBD)
+  - Offhand-Waffen ohne Klassen-Talent abgeschwächt (Standard-Dual-Wield)
 - i18n / Mehrsprachigkeit (vor M5 einplanen, Architektur muss früh stehen):
-- translations-Tabelle (name_key, language, text)
-- entities.name → name_key (technischer Identifier)
-- vorhandene Item-Namen und Beschreibungen migrieren
-- Helper get_text(key, language='de'), Code nutzt durchgehend get_text()
-- UI-System mit Tooltips
-- Bibliothek wählen (pygame / textual / arcade)
-- Inventar-Fenster mit Hover-Tooltips
-- Stat-Tooltips mit Beschreibung + Kategorie
-- Maus-Auswahl statt Eingabe-Nummern (beides soll Funktionieren!)
-- Absteigendes Gewichtssystem
+  - translations-Tabelle (name_key, language, text)
+  - entities.name → name_key (technischer Identifier)
+  - vorhandene Item-Namen und Beschreibungen migrieren
+  - Helper get_text(key, language='de'), Code nutzt durchgehend get_text()
+- UI-System mit Tooltips:
+  - Bibliothek wählen (pygame / textual / arcade)
+  - Inventar-Fenster mit Hover-Tooltips
+  - Stat-Tooltips mit Beschreibung + Kategorie
+  - Maus-Auswahl statt Eingabe-Nummern (beides soll funktionieren!)
+- Absteigendes Gewichtssystem, alternativ Rucksackmanagement (Diablo like)
 - Klassenquests
-- Crafting-System (Alchemie, Schmied)
+- Crafting-System (generisch, siehe eigener Block unten)
 - Trainingssystem (z. B. schwere Rüstung für Barbar)
-- Haltbarkeits-Formel: zufaellige_haltbarkeit(max, min_prozent, max_prozent)
-- frischer Drop aus Truhe
-- Drop vom gegnerischen Träger
-- in Höhle gefunden
+- Haltbarkeits-Formel: zufaellige_haltbarkeit(max, min_prozent, max_prozent):
+  - frischer Drop aus Truhe
+  - Drop vom gegnerischen Träger
+  - in Höhle gefunden
 - Boundary-Testing: immer Minimal- und Maximal-Konfiguration testen
 - Bestiarium:
-    Status entdeckt/nicht, Anzahl besiegt, Datum erster Sieg
-    aufgedeckte Schwächen (erst nach X Kämpfen sichtbar), Lore-Text
-    Fortschritt nach Art des Sieges (Tötung > Spezial-Kill > Flucht)
-
+  - Status entdeckt/nicht, Anzahl besiegt, Datum erster Sieg
+  - aufgedeckte Schwächen (erst nach X Kämpfen sichtbar), Lore-Text
+  - Fortschritt nach Art des Sieges (Tötung > Spezial-Kill > Flucht)
 - NPC-Begleiter (finden, mitkämpfen, in Hub schicken)
 - Hub-Angriff-Event
 - Gruppenbildung und Befreiungsquests
@@ -45,4 +44,59 @@ Ideas:
 - Permadeath-Modus
 - Licht-System (Fackel, magische Items)
 - Grafik und Musik (itch.io, OpenGameArt.org)
-- Dynamische Menüführung durch Stack (append,pop)
+- Dynamische Menüführung durch Stack (append, pop)
+
+- Wunschbrunnen (Event):
+  - mysteriöser Brunnen, der als Event erscheinen kann; Gamble gegen Einsatz → Ausrüstung
+  - Grundvoraussetzung: Geld hineinwerfen; mehr Geld = höhere Chance, dass etwas herauskommt
+  - erweitert: auch Items hineinwerfen; eingeworfenes Item beeinflusst Chancen/Ergebnis, möglichst logisch
+  - Beispiel: Geld + Heil-Trank → Chance auf Verzauberung (Heilung/Defensive) auf dem Teil
+  - auch mit Crafting-Materialien
+  - Ergebnis: Ausrüstungsteil mit Verzauberung/Stat, falls beide Würfe treffen (1. Teil erscheint, 2. Verzauberung/Stat)
+  - abhängig von: Items/Inventar (M3), Loot/Affixe, Geld/Währung, Crafting-Material → frühestens nach Item-/Affix-System
+  - teilt Unterbau mit Crafting (Gamble gegen Einsatz → Item/Affix)
+
+- Status-Effekt-Arten (Backlog für die effects-Tabelle):
+  - zwei Achsen: Mechanismus (Typ) = wo im Ablauf der Effekt greift; Nutzen (Buff/Debuff) = nur Vorzeichen, keine eigene Kategorie
+  - jeder Typ = eine Stelle im Code + ein CHECK-Wert; erst bauen, wenn die Stelle gebraucht wird
+  - tick: jede Runde auf einen Wert; negativ = DoT (vorhanden: Bleed/Fire), positiv = HoT (Deckel bei base_health)
+  - modifier: verändert einen Wert, solange aktiv (Buff/Debuff) → nächster Schritt (siehe buff_design.md)
+  - state (Crowd Control): ändert, was die Einheit tun kann, kein Betrag (Betäubung/Stille/Spott); greift am Rundenbeginn/bei Aktionswahl; sprengt die Ein-Tabellen-Form
+  - absorb: eigener Puffer, nimmt Schaden vor den HP, baut sich ab
+  - trigger: reagiert auf Ereignis (bei Treffer/Crit/Tod) — Dornen, Lebensraub, Wiederbelebung; braucht Bedingung
+  - Sofort-Effekte (Heilung, Dispel) haben keine Dauer, nicht in diese Tabelle
+  - Fachbegriffe: Status Effect (Oberbegriff = Klasse Effects), Stat-Modifier (Buff/Debuff), DoT/HoT
+
+- Unterklassen Player(Entity) / Enemy(Entity) — Kandidat, nicht jetzt:
+  - erst bauen, wenn 2+ echte Fälle mit divergierendem Verhalten existieren
+  - aktuell nur eine Verzweigung (if entity in self.player_group)
+
+- Crafting-System (generisch):
+  - vier Stationen geplant: Schmied, Alchemie, Koch/Rationen (Buffs/Effekte), Verzauberer
+  - Leitidee: eine gemeinsame Engine, nur Rezeptdaten + 1–2 Methoden station-spezifisch
+  - passt auf Projektmuster (Anker-Items, data-driven, "flache Wahrheit speichern, Sichten ableiten")
+  - Geteilter Kern (für alle Stationen gleich):
+    - ein Craft = Inputs (Zutaten / Basis-Item / Geld) → Rezept → Wurf → Output
+    - Engine: Inputs vorhanden? → verbrauchen → würfeln → Output erzeugen/anhängen
+    - Rezepte sind DATEN in der DB (SSOT), wie Abilities/Effekte; neue Station/neues Rezept = Zeilen, kein neuer Code
+  - Station-spezifisch (weniger als es aussieht):
+    - Schmied/Alchemie/Koch = "verbrauche Inputs → erzeuge NEUES Item", Unterschied nur Rezeptdaten + Output-Kategorie (Ausrüstung/Trank/Ration)
+    - Verzauberer = Ausreißer: verändert ein BESTEHENDES Item (Affix drauf) → eigener Pfad; hängt am Affix-/Item-Instanz-System (Affix = Instanzzustand, kein Stack)
+  - Materialfluss (thematisch):
+    - Monsterteile → Schmied; verarbeitet → Staub/Pulver → Alchemie/Verzaubern
+    - "Verarbeiten" ist selbst ein Rezept → dieselbe Engine kettet roh → Zwischenstufe → fertig ohne Extra-Code
+    - Items brauchen dafür nur eine material/category, auf die Rezepte verweisen
+  - Regeln/Grenzen:
+    - earn-the-abstraction: erst EINE Station konkret bauen, dann die Engine extrahieren; nicht 4 Crafting-Klassen auf Vorrat
+    - abhängig von: Items/Inventar (M3), Währung, Affix-System
+    - Wunschbrunnen teilt denselben Unterbau (Gamble gegen Einsatz → Item/Affix)
+  - Recipe Discovery (Fachbegriff: Recipe Discovery / Progressive Disclosure):
+    - Output unbekannt (???), bis einmal hergestellt; danach zeigt die Station, was rauskommt
+    - gleiches Muster wie das Bestiarium, nur auf Rezepte statt Gegner; nicht patentiert, viel Prior Art (Little Alchemy, Monster Hunter)
+    - entdeckt/unbekannt = ZUSTAND im Speicherstand (Entdeckt-Set), NICHT in der Rezept-Definition
+    - ??? ist keine Daten: Zutat/Output hat echten Namen (Definition), Anzeige zeigt ??? solange die ID nicht im Entdeckt-Set ist (abgeleitete Sicht)
+    - weitere Entdeck-Quellen setzen denselben Eintrag: selbst herstellen, Buch lesen, NPC-Dialog, Gegner-Hinweis
+    - Vorverarbeitung "über Werkzeug statt Rezept": mechanisch trotzdem ein Rezept; Werkzeug (Mörser/magisch) ist ein Gate-Flag, kein zweiter Mechanismus
+    - Einstiegsquest je Hersteller (v. a. Alchemist/Verzauberer): schaltet das Werkzeug-Flag frei; Quest-Teil läuft übers Quest-System
+    - Koch-Beispiel fürs Feeling: Knochen → Mark/Knochenstaub = Rezepte mit Zwischenprodukt-Output
+    - Scope: billiger Kern = Entdeckt-Set + abgeleitete ???-Anzeige; Quests, Werkzeuge, Hinweis-Quellen, Zwischenprodukte inkrementell, nicht als Block bauen
