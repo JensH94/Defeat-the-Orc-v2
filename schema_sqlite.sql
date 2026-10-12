@@ -25,9 +25,11 @@ CREATE TABLE classes (
 CREATE TABLE effects (
     effect_id INTEGER PRIMARY KEY,
     name       TEXT,
-    min_damage INTEGER,
-    max_damage INTEGER,
-    duration   INTEGER DEFAULT 0
+    min_value INTEGER NOT NULL,
+    max_value INTEGER NOT NULL CHECK (max_value >= min_value),
+    duration   INTEGER DEFAULT 0,
+    effect_type TEXT NOT NULL CHECK (effect_type IN ('tick', 'stat_modifier')),
+    stat TEXT NOT NULL CHECK (stat IN ('health', 'incoming_damage', 'outgoing_damage'))
 );
 
 CREATE TABLE enemies (
@@ -52,7 +54,8 @@ CREATE TABLE skills (
     name          TEXT,
     min_damage    INTEGER,
     max_damage    INTEGER,
-    resource_cost INTEGER
+    resource_cost INTEGER,
+    target_type TEXT NOT NULL CHECK (target_type IN ('self', 'hostile'))
 );
 
 CREATE TABLE spells (
@@ -60,7 +63,8 @@ CREATE TABLE spells (
     name          TEXT,
     min_damage    INTEGER,
     max_damage    INTEGER,
-    resource_cost INTEGER
+    resource_cost INTEGER,
+    target_type TEXT NOT NULL CHECK (target_type IN ('self', 'hostile'))
 );
 
 CREATE TABLE weapons (
@@ -117,9 +121,9 @@ INSERT INTO classes (class_id, name, base_health, base_initiative, base_resource
 (1, 'Mage', 20, 15, 100, 'mana', 100),
 (2, 'Barbarian', 30, 13, 0, 'rage', 100);
 
-INSERT INTO effects (effect_id, name, min_damage, max_damage, duration) VALUES
-(1, 'Fire', 2, 4, 3),
-(2, 'Bleed', 1, 5, 4);
+INSERT INTO effects (effect_id, name, min_damage, max_damage, duration, effect_type, stat_modifier) VALUES
+(1, 'Fire', 2, 4, 3, 'tick', 'health'),
+(2, 'Bleed', 1, 5, 4, 'tick', 'health');
 
 INSERT INTO enemies (enemy_id, name, base_health, base_mana, base_initiative) VALUES
 (1, 'Rat', 15, 0, 12),
@@ -129,11 +133,13 @@ INSERT INTO items (item_id, name, min_damage, max_damage, min_heal, max_heal) VA
 (1, 'Small Bomb', 2, 6, 0, 0),
 (2, 'Small Health Potion', 0, 0, 2, 6);
 
-INSERT INTO skills (skill_id, name, min_damage, max_damage, resource_cost) VALUES
-(1, 'Wounding Strike', 2, 6, 10);
+INSERT INTO skills (skill_id, name, min_damage, max_damage, resource_cost, target_type) VALUES
+(1, 'Wounding Strike', 2, 6, 10, 'hostile'),
+(2, 'Raging Roar', 0, 0, 15, 'self');
 
-INSERT INTO spells (spell_id, name, min_damage, max_damage, resource_cost) VALUES
-(1, 'Fireball', 3, 9, 12);
+INSERT INTO spells (spell_id, name, min_damage, max_damage, resource_cost, target_type) VALUES
+(1, 'Fireball', 3, 9, 12, 'hostile'),
+(2, 'Mage Armor', 0, 0, 10, 'self');
 
 INSERT INTO weapons (weapon_id, name, min_damage, max_damage, crit_chance) VALUES
 (1, 'Axe', 3, 10, 0),
