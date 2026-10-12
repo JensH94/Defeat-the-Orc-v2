@@ -59,9 +59,9 @@ class Entity:
         if self.resource_type == "rage":
             self.current_resource = 0
 
-    def find_effect(self, effects_id) -> Effects | None:
+    def find_effect(self, effect_id) -> Effects | None:
         for effect in self.entity_effects:
-            if effect.effects_id == effects_id:
+            if effect.effect_id == effect_id:
                 return effect
         return None
 
@@ -111,7 +111,7 @@ class Armor:
 class Effects:
 
     def __init__(self, daten: dict):
-        self.effects_id: int = daten.get("effects_id", 0)
+        self.effect_id: int = daten.get("effect_id", 0)
         self.name: str = daten.get("name", "unbekannt")
         self.min_damage: int = daten.get("min_damage", 0)
         self.max_damage: int = daten.get("max_damage", 0)

@@ -8,6 +8,7 @@ def verbinden():
     print("Verbindung hergestellt")
     return connection
 
+
 def fetch_all(connection, query, params=None):
     cursor = connection.cursor()
     cursor.execute(query, params or [])
@@ -43,7 +44,7 @@ def get_effects_for_skills(connection, skill_id):
     query = """
             SELECT effects.*, skill_effects.effect_chance
             FROM skill_effects
-            JOIN effects ON skill_effects.effect_id = effects.effects_id
+            JOIN effects ON skill_effects.effect_id = effects.effect_id
             WHERE skill_effects.skill_id = ?
             """
     return fetch_all(connection, query, (skill_id,))
@@ -53,7 +54,7 @@ def get_effects_for_spells(connection, spell_id):
     query = """
             SELECT effects.*, spell_effects.effect_chance
             FROM spell_effects
-            JOIN effects ON spell_effects.effect_id = effects.effects_id
+            JOIN effects ON spell_effects.effect_id = effects.effect_id
             WHERE spell_effects.spell_id = ?
             """
     return fetch_all(connection, query, (spell_id,))

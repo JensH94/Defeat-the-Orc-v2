@@ -297,7 +297,7 @@ class Fight:
                     effect_list = turn.ability.create_effects()
                     for effect in effect_list:
                         if roll_chance(effect.effect_chance):
-                            same_effect = turn.target.find_effect(effect.effects_id)
+                            same_effect = turn.target.find_effect(effect.effect_id)
                             if same_effect:
                                 same_effect.effects_duration = effect.effects_duration
                                 slow_print(f"{effect.name} refreshed")

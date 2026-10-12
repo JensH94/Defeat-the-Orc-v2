@@ -1,7 +1,5 @@
 Tech-Debt:
 
-- effects.effects_id → effect_id umbenennen (Konsistenz: Tabelle Plural, Schlüssel Singular)
-  - betrifft classes.py + alle JOINs, eigener Commit
 - Type Hints noch nicht vervollständigt
   - Hit/Crit sind ganze Zahlen → int statt float (Entity.base_crit_chance, base_hit_chance, Weapon.crit_chance; DB ist INTEGER)
 - Weapon.hit_chance: Attribut ohne DB-Spalte, Default 0.0 (liest sich als "trifft nie")

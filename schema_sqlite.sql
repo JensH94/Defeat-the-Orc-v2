@@ -23,7 +23,7 @@ CREATE TABLE classes (
 );
 
 CREATE TABLE effects (
-    effects_id INTEGER PRIMARY KEY,
+    effect_id INTEGER PRIMARY KEY,
     name       TEXT,
     min_damage INTEGER,
     max_damage INTEGER,
@@ -95,7 +95,7 @@ CREATE TABLE skill_effects (
     effect_chance INTEGER,
     PRIMARY KEY (skill_id, effect_id),
     FOREIGN KEY (skill_id) REFERENCES skills(skill_id),
-    FOREIGN KEY (effect_id) REFERENCES effects(effects_id)
+    FOREIGN KEY (effect_id) REFERENCES effects(effect_id)
 );
 
 CREATE TABLE spell_effects (
@@ -104,7 +104,7 @@ CREATE TABLE spell_effects (
     effect_chance INTEGER,
     PRIMARY KEY (spell_id, effect_id),
     FOREIGN KEY (spell_id) REFERENCES spells(spell_id),
-    FOREIGN KEY (effect_id) REFERENCES effects(effects_id)
+    FOREIGN KEY (effect_id) REFERENCES effects(effect_id)
 );
 
 -- ---------- Daten ----------
@@ -117,7 +117,7 @@ INSERT INTO classes (class_id, name, base_health, base_initiative, base_resource
 (1, 'Mage', 20, 15, 100, 'mana', 100),
 (2, 'Barbarian', 30, 13, 0, 'rage', 100);
 
-INSERT INTO effects (effects_id, name, min_damage, max_damage, duration) VALUES
+INSERT INTO effects (effect_id, name, min_damage, max_damage, duration) VALUES
 (1, 'Fire', 2, 4, 3),
 (2, 'Bleed', 1, 5, 4);
 
