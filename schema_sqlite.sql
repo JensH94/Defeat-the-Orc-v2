@@ -121,9 +121,11 @@ INSERT INTO classes (class_id, name, base_health, base_initiative, base_resource
 (1, 'Mage', 20, 15, 100, 'mana', 100),
 (2, 'Barbarian', 30, 13, 0, 'rage', 100);
 
-INSERT INTO effects (effect_id, name, min_damage, max_damage, duration, effect_type, stat_modifier) VALUES
+INSERT INTO effects (effect_id, name, min_value, max_value, duration, effect_type, stat) VALUES
 (1, 'Fire', 2, 4, 3, 'tick', 'health'),
-(2, 'Bleed', 1, 5, 4, 'tick', 'health');
+(2, 'Bleed', 1, 5, 4, 'tick', 'health'),
+(3, 'Enraged', 20, 20, 2, 'stat_modifier', 'outgoing_damage' ),
+(4, 'Magic Armor', -20, -20, 3, 'stat_modifier', 'incoming_damage');
 
 INSERT INTO enemies (enemy_id, name, base_health, base_mana, base_initiative) VALUES
 (1, 'Rat', 15, 0, 12),
@@ -146,13 +148,17 @@ INSERT INTO weapons (weapon_id, name, min_damage, max_damage, crit_chance) VALUE
 (2, 'Staff', 1, 6, 0);
 
 INSERT INTO class_skills (class_id, skill_id) VALUES
-(2, 1);
+(2, 1),
+(2, 2);
 
 INSERT INTO class_spells (class_id, spell_id) VALUES
-(1, 1);
+(1, 1),
+(1, 2);
 
 INSERT INTO skill_effects (skill_id, effect_id, effect_chance) VALUES
-(1, 2, 100);
+(1, 2, 100),
+(2, 3, 100);
 
 INSERT INTO spell_effects (spell_id, effect_id, effect_chance) VALUES
-(1, 1, 30);
+(1, 1, 30),
+(2, 4, 100);

@@ -113,14 +113,15 @@ class Effects:
     def __init__(self, daten: dict):
         self.effect_id: int = daten.get("effect_id", 0)
         self.name: str = daten.get("name", "unbekannt")
-        self.min_damage: int = daten.get("min_damage", 0)
-        self.max_damage: int = daten.get("max_damage", 0)
-        self.effects_target = "current_health"
+        self.min_value: int = daten["min_value"]
+        self.max_value: int = daten["max_value"]
         self.effects_duration: int = daten.get("duration", 0)
         self.effect_chance: int = daten.get("effect_chance", 0)
+        self.effect_type: str = daten["effect_type"]
+        self.stat: str = daten["stat"]
 
     def effects_apply(self, target):
-        effects_dmg: int = random.randint(self.min_damage, self.max_damage)
+        effects_dmg: int = random.randint(self.min_value, self.max_value)
         target.current_health = max(0, target.current_health - effects_dmg)
         return effects_dmg
 
@@ -137,6 +138,7 @@ class Skill:
         self.max_damage: int = daten.get("max_damage", 0)
         self.resource_cost: int = daten.get("resource_cost", 0)
         self.effect_data: list[dict] = []
+        self.target_type: str = daten["target_type"]
 
     def create_effects(self):
         effects = []
@@ -157,6 +159,7 @@ class Spell:
         self.max_damage: int = daten.get("max_damage", 0)
         self.resource_cost: int = daten.get("resource_cost", 0)
         self.effect_data: list[dict] = []
+        self.target_type: str = daten["target_type"]
 
     def create_effects(self):
         effects = []

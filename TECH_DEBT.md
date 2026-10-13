@@ -1,48 +1,42 @@
 Tech-Debt:
 
-- Type Hints noch nicht vervollständigt
-  - Hit/Crit sind ganze Zahlen → int statt float (Entity.base_crit_chance, base_hit_chance, Weapon.crit_chance; DB ist INTEGER)
-- Weapon.hit_chance: Attribut ohne DB-Spalte, Default 0.0 (liest sich als "trifft nie")
-  - entfernen oder als Platzhalter kommentieren, bis die Kampf-Mathematik steht
-- .gitattributes fehlt noch (CRLF/LF-Warnung)
+## DB / Schema
+- DB-Datei: connect legt still leere .db an → vor Verbinden prüfen + klare Meldung ("init_db.py ausführen")
+- DB-Pfad relativ zum Arbeitsverzeichnis → Path(__file__).parent; DB-Name doppelt (database.py + init_db.py) → eine Stelle
+- Verbindung nicht sauber geschlossen → try/finally oder contextlib.closing (main.py + init_db.py)
+- get_data: Tabellenname per f-string → Whitelist oder bewusst kommentieren
+- Schema härten: NOT NULL/CHECK für Pflichtspalten (jeweils mit dem Feature-Umbau der Tabelle)
+
+## loader.py
+- choose_player_class + random_enemy_* raus aus Loader (SoC) → Menü-/Spawn-Modul
+- build_list(cls, rows) generisch für build_items/weapons/armor (erst beim 3. Fall)
+- items/weapons/armor geladen aber ungenutzt → ggf. bis M3 aufschieben
+- get_skills/get_spells_for_classes (+ get_effects_for_skills/_spells) fast identisch → erst beim 3. Fall zusammenlegen
+- entity_id vom Loader gesetzt statt im Konstruktor
 - build_enemies braucht entity_id = zeile["enemy_id"], sobald Enemies Fähigkeiten bekommen
-- get_skills/get_spells_for_classes fast identisch
-  - gilt genauso für get_effects_for_skills/\_spells
-  - zusammenlegen erst beim 3. Fall (würde Tabellennamen parametrisieren → f-string-Thema)
-- entity_id wird vom Loader gesetzt statt im Konstruktor, später als Parameter
-- **repr** wird zu Testzwecken immer mal umgeschrieben ("Dauerdebt")
+- N+1-Queries im Loader → eher Architektur-Notiz ins README
+
+## fight.py / environment.py
+- fight_loop splitten: resolve_turn, apply_effects, end-of-round (kommt mit Buffs)
+- initiative_list: nach current_initiative sortieren, key_base_init umbenennen
+- ENCOUNTER_CHANCE dupliziert room_data.encounter_chance → eine Quelle
+- room_movement gibt 2 Enum-Typen zurück → ein Typ pro Methode, an Grenze übersetzen
+- palyer_names → player_names (announce_fight)
+- resource_spending (classes.py) kein Schutz gegen negativ (aktuell sicher)
+- enemy_choice/player_choice setzen nicht-leere Zielgruppe voraus (aktuell sicher)
+
+## main.py
+- if __name__ == "__main__": Guard + main()-Funktion
+- Ausgangs-else schluckt alles → bei 3+ Ausgängen explizit pro Enum-Wert
+
+## Naming / Typen
+- Naming-Konvention festlegen, dann Rename-Commit (verbinden/disconnect, tabelle, _for_classes→_for_class, daten/zeile)
+- Konstruktor-Attributnamen an DB-Spalten angleichen (im Tabellen-Härtungs-Commit)
+- Pflichtfelder in Konstruktoren auf daten["key"] statt .get(...,0) (mit Härtung)
+- Type Hints: Hit/Crit als int statt float (Entity.base_crit_chance, base_hit_chance, Weapon.crit_chance)
+- Weapon.hit_chance: Attribut ohne DB-Spalte, Default 0.0 → entfernen oder kommentieren
+- __repr__ Dauerdebt (für Tests umgeschrieben)
+- environment directions umbenennen
+- .gitattributes fehlt (CRLF/LF-Warnung)
 - try/int(input)/range-check → Helper-Funktion
-- Umbenennung der environment directions
-- DB-Datei: sqlite3.connect legt still eine leere .db an, wenn sie fehlt
-  - Fehler kommt erst später als "no such table"
-  - vor dem Verbinden prüfen, klare Meldung ("init_db.py ausführen"), Exception statt weiterlaufen
-  - betrifft database.py + init_db.py
-- DB-Pfad relativ zum Arbeitsverzeichnis statt zur Datei
-  - Start aus anderem Ordner legt neue leere .db an → Path(**file**).parent nutzen
-  - DB-Name steht doppelt als Text (database.py + init_db.py) → an eine Stelle ziehen
-- Verbindung wird nicht sauber geschlossen (kein try/finally)
-  - contextlib.closing oder try/finally in main.py + init_db.py
-  - Hinweis: with sqlite3.connect(...) schließt NICHT, steuert nur die Transaktion
-- Prints "Verbindung hergestellt/getrennt" erscheinen im Spielerterminal → raus oder Logging
-- get_data: Tabellenname per f-string (SELECT \* FROM {tabelle})
-  - aktuell sicher (nur hartcodierte Namen), von außen = SQL-Injection
-  - Whitelist erlaubter Tabellen oder bewusst belassen + kommentieren
-- Schema härten: NOT NULL für Pflichtspalten, CHECK für feste Wertemengen/Bereiche
-  - Pflichtwerte im Loader mit daten["key"] statt .get(..., 0), damit fehlender Key laut scheitert
-  - eigener Commit
-- Naming-Konvention festlegen (Sprache der Bezeichner, Singular/Plural), dann Rename-Commit
-  - verbinden/disconnect gemischt, Parameter tabelle
-  - get\_\*\_for_classes nimmt eine class_id (müsste \_for_class heißen)
-  - daten/zeile, "unbekannt"/"Unbekannt"
-- N+1-Queries im Loader (pro Klasse 2 Abfragen, pro Skill/Spell nochmal je Effekte)
-  - beim Start gegen lokale Datei irrelevant, Fix (JOIN) kostet Lesbarkeit ohne Nutzen → bewusst aufgeschoben
-  - eher als Architektur-Entscheidung ins README als offener Mangel
-- Tippfehler Variablenname: palyer_names in fight.py announce_fight → player_names
-- resource_spending (classes.py) hat keinen Schutz gegen negativ
-  - aktuell sicher, weil immer enough_resource davor läuft
-- enemy_choice/player_choice setzen nicht-leere Zielgruppe voraus
-  - aktuell sicher durch den break nach tödlichem Treffer
-  - im Blick behalten, falls die Abbruchlogik in fight_loop umgebaut wird
-- Optional nach Regel: Mana-Regen am Kampfende nur bei Sieg (an fight_result() == VICTORY koppeln)
-  - aktuell läuft er auch bei Niederlage, aber ins Leere (Spieler tot)
-  - relevant erst, wenn eine Niederlage überlebbar wird
+- Prints "Verbindung hergestellt/getrennt" aus dem Spielerterminal
