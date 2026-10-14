@@ -132,6 +132,17 @@ class Fight:
                     f"Wrong number, please choose a number between 1 and {len(target_group)}"
                 )
 
+    def resolve_target_group(self, entity, target_type):
+        if entity in self.player_group:
+            opponents = self.enemy_group
+        else:
+            opponents = self.player_group
+
+        if target_type == "self":
+            return [entity]
+        else:
+            return opponents
+
     def choose_ability(self, ability_list, entity) -> Skill | Spell | None:
         while True:
             slow_print(f" Choose an ability\n")
@@ -173,6 +184,7 @@ class Fight:
         action = None
         ability = None
         target = None
+        target_type = None
 
         while True:
             if step == "action":
@@ -184,6 +196,7 @@ class Fight:
                     show_status(self.enemy_group, "Enemies", show_resource=False)
                     continue
                 if action == Action.ATTACK:
+                    target_type = "hostile"
                     step = "target"
                 else:
                     step = "ability"
@@ -196,9 +209,12 @@ class Fight:
                 if ability is None:
                     step = "action"
                 else:
+                    target_type = ability.target_type
                     step = "target"
             elif step == "target":
-                target = self.player_choice(self.enemy_group)
+                target = self.player_choice(
+                    self.resolve_target_group(entity, target_type)
+                )
                 if target is None:
                     if action == Action.ATTACK:
                         step = "action"
