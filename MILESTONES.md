@@ -3,50 +3,57 @@ Können sich jederzeit ändern. Dient der groben Orientierung.
 
 Milestones:
 
-M1(Erledigt!):
+M1: Erledigt
 
 - Datenbank anlegen
 - Daten aus der Datenbank in Python übertragen
-- Aus den Daten Klassen Bauen
+- Aus den Daten Klassen bauen
 - Einen Kampf bauen
-- Klassen in Kampf bauen für funktionen wie Schaden Würfeln
-- Testkampf mit minimalen Entities und funktionalität zum laufen bekommen
+- Klassen in Kampf bauen (Schaden würfeln etc.)
+- Testkampf mit minimalen Entities zum Laufen bekommen
 
-M2(MVP):
+M2 (MVP): in Bearbeitung
 
-- Erste Umgebung bauen
-- Mehrere Räume und umsehen soll möglich sein
-- Zufällige Gegner begegnungen
+- Erste Umgebung, Räume, Umsehen
+- Zufällige Gegnerbegegnungen
 - Buffs/Debuffs
-- Simple Gegener KI
+- Simple Gegner-KI
 - Skills/Spells Grundgerüst
+
+M2.5:
+
+- Minimale Stats (offensiv/defensiv)
+- Ausrüstung Grundgerüst (feste Startausrüstung)
+- Gegner-Fähigkeit + KI, die sie nutzt
+- Stat-Modifier-Debuff
 
 M3:
 
 - Items und Inventar
+- Ausrüstung ausarbeiten (an-/ablegen, Slots)
 - Lootsystem Grundgerüst
-
+- Währung
+- Spielfortschritt speichern
 
 M4:
-- Spieler Hub bauen
-- Erste NPCs (Schmied, Händler)
-- Tod als folge von verlorenen Kampf (in Hub respawnen)
-- Zeitsystem Grundgerüst bauen
-- Spielfortschritt Speichern
+
+- Spieler-Hub
+- Erste NPCs (Schmied, Händler), Kaufen/Verkaufen
+- Tod → in Hub respawnen
+- Zeitsystem Grundgerüst
 
 M5:
 
+- EXP-/Levelsystem
+- Skillpunkte + Skillbaum
+  - Voraussetzung: EXP → Level → Skillpunkte → Talentbaum
 - Mehr Klassen
-- Skillbaum
-- Levelsystem
 - Quests
+- Wetter-Mechanik
 
 M6:
 
 - Bestiarium (mit Fortschrittssystem)
-- Pygame integration
-- Visuelle Hilfsmittel
-- Interface
-- Boss Design/Mechanics
-- Wetter Mechanic
+- Boss-Design/Mechanics
+- Pygame-Integration, visuelle Hilfsmittel, Interface
 - Skills/Spells ausarbeiten
