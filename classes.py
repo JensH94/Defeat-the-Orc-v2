@@ -26,13 +26,26 @@ class Entity:
         self.death_reported: bool = False
 
     def tick_effects(self):
-        effects_events = []
-        for effects in self.entity_effects:
-            tick_damage = effects.effects_apply(self)
-            effects_events.append((effects.name, tick_damage))
-            effects.effects_duration -= 1
+        effect_events = []
+        for effect in self.entity_effects:
+            if effect.effect_type != "tick":
+                continue
+            tick_damage = effect.effects_apply(self)
+            effect_events.append((effect.name, tick_damage))
+            effect.effects_duration -= 1
         self.entity_effects = [e for e in self.entity_effects if e.effects_duration > 0]
-        return effects_events
+        return effect_events
+
+    def expire_modifiers(self):
+        expired = []
+        for effect in self.entity_effects:
+            if effect.effect_type != "stat_modifier":
+                continue
+            effect.effects_duration -= 1
+            if effect.effects_duration <= 0:
+                expired.append(effect.name)
+        self.entity_effects = [e for e in self.entity_effects if e.effects_duration > 0]
+        return expired
 
     def resource_generation(self, resource_value):
         if self.resource_type == "rage":
@@ -64,6 +77,13 @@ class Entity:
             if effect.effect_id == effect_id:
                 return effect
         return None
+
+    def stat_modifier_sum(self, stat):
+        result = 0
+        for effect in self.entity_effects:
+            if effect.effect_type == "stat_modifier" and effect.stat == stat:
+                result += effect.min_value
+        return result
 
     def __repr__(self) -> str:
         return f"Entity ({self.name} | HP: {self.base_health} | Mana: {self.base_resource} | Initiative: {self.base_initiative})"

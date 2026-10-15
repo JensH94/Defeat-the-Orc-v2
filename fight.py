@@ -44,6 +44,12 @@ def roll_range(value_range):
     low, high = value_range
     return random.uniform(low, high)
 
+def calculate_damage(damage, outgoing_mod=0, incoming_mod=0, is_crit=False):
+    damage = damage * (1+outgoing_mod/100)
+    if is_crit:
+        damage = damage * CRIT_HIT_FACTOR
+    damage = damage * (1 + incoming_mod/100)
+    return round(damage)
 
 class Fight:
     def __init__(self, player_group, enemy_group):
@@ -72,9 +78,6 @@ class Fight:
 
     def roll_crit(self, entity):
         return roll_chance(entity.current_crit_chance)
-
-    def apply_crit(self, damage):
-        return round(damage * CRIT_HIT_FACTOR)
 
     def choose_action(self, entity) -> Action:
 
@@ -263,6 +266,17 @@ class Fight:
             return FightResult.VICTORY
         return FightResult.DEFEAT
 
+    def expire_modifiers(self):
+        expired = []
+        for effect in self.entity_effects:
+            if effect.effect_type != "stat_modifier":
+                continue
+            effect.effects_duration -= 1
+            if effect.effects_duration <= 0:
+                expired.append(effect.name)
+        self.entity_effects = [e for e in self.entity_effects if e.effects_duration > 0]
+        return expired
+
     def fight_loop(self) -> FightResult:
 
         self.announce_fight()
@@ -272,6 +286,11 @@ class Fight:
         ):
 
             slow_print(f"\n-- Round: {self.rounds} --\n")
+
+            for entity in self.turn_order:
+                if entity.is_alive():
+                    for name in entity.expire_modifiers():
+                        slow_print(f"{entity.name}: {name} ran out")
 
             for entity in self.turn_order:
                 if not entity.is_alive():
@@ -302,9 +321,13 @@ class Fight:
                         turn.ability.min_damage, turn.ability.max_damage
                     )
 
-                if self.roll_crit(entity):
-                    damage = self.apply_crit(damage)
+                is_crit = self.roll_crit(entity)
+                outgoing = entity.stat_modifier_sum("outgoing_damage")
+                incoming = turn.target.stat_modifier_sum("incoming_damage")
+                damage = calculate_damage(damage, outgoing, incoming, is_crit)
+                if is_crit:
                     slow_print(f"{entity.name} crits against {turn.target.name}")
+
                 turn.target.current_health = max(0, turn.target.current_health - damage)
                 slow_print(
                     f"{turn.target.name} takes {damage} damage from {entity.name}"
