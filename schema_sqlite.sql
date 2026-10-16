@@ -13,13 +13,17 @@ CREATE TABLE armor (
 );
 
 CREATE TABLE classes (
-    class_id        INTEGER PRIMARY KEY,
-    name            TEXT,
-    base_health     INTEGER,
-    base_initiative INTEGER,
-    base_resource   INTEGER,
-    resource_type   TEXT,
-    max_resource    INTEGER
+    class_id            INTEGER PRIMARY KEY,
+    name                TEXT,
+    base_health         INTEGER,
+    base_initiative     INTEGER,
+    base_resource       INTEGER,
+    resource_type       TEXT,
+    max_resource        INTEGER,
+    strength            INTEGER NOT NULL CHECK (strength >= 0),
+    intelligence        INTEGER NOT NULL CHECK (intelligence >= 0),
+    armor               INTEGER NOT NULL CHECK (armor >= 0),
+    magic_resistance    INTEGER NOT NULL CHECK (magic_resistance >= 0)
 );
 
 CREATE TABLE effects (
@@ -117,9 +121,9 @@ INSERT INTO armor (armor_id, name, defense) VALUES
 (1, 'Mage Cloth', 10),
 (2, 'Barbarian Leather', 17);
 
-INSERT INTO classes (class_id, name, base_health, base_initiative, base_resource, resource_type, max_resource) VALUES
-(1, 'Mage', 20, 15, 100, 'mana', 100),
-(2, 'Barbarian', 30, 13, 0, 'rage', 100);
+INSERT INTO classes (class_id, name, base_health, base_initiative, base_resource, resource_type, max_resource, strength, intelligence, armor, magic_resistance) VALUES
+(1, 'Mage', 20, 15, 100, 'mana', 100, 3, 10, 3, 8),
+(2, 'Barbarian', 30, 13, 0, 'rage', 100, 10, 3, 8, 3);
 
 INSERT INTO effects (effect_id, name, min_value, max_value, duration, effect_type, stat) VALUES
 (1, 'Fire', 2, 4, 3, 'tick', 'health'),

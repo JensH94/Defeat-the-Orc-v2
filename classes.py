@@ -24,6 +24,7 @@ class Entity:
         self.entity_spells: list = []
         self.entity_skills: list = []
         self.death_reported: bool = False
+        self.base_stats: dict = {}
 
     def tick_effects(self):
         effect_events = []

@@ -14,6 +14,12 @@ def build_classes(classes_data, connection):
     character_classes = []
     for zeile in classes_data:
         entity = Entity(zeile)
+        entity.base_stats = {
+            "strength": zeile["strength"],
+            "intelligence": zeile["intelligence"],
+            "armor": zeile["armor"],
+            "magic_resistance": zeile["magic_resistance"],
+        }
         entity.entity_id = zeile["class_id"]
         skills_data = get_skills_for_classes(connection, entity.entity_id)
         spells_data = get_spells_for_classes(connection, entity.entity_id)
