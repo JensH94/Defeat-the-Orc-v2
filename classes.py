@@ -86,6 +86,9 @@ class Entity:
                 result += effect.min_value
         return result
 
+    def get_stat(self, stat):
+        return self.base_stats.get(stat, 0)
+
     def __repr__(self) -> str:
         return f"Entity ({self.name} | HP: {self.base_health} | Mana: {self.base_resource} | Initiative: {self.base_initiative})"
 
