@@ -19,6 +19,12 @@ def get_data(connection, tabelle):
     query = f"SELECT * FROM {tabelle}"
     return fetch_all(connection, query)
 
+def get_weapon(connection, weapon_id):
+    query = """
+            SELECT * FROM weapons WHERE weapon_id = ?
+            """
+    return fetch_all(connection, query, (weapon_id,))
+
 
 def get_skills_for_classes(connection, class_id):
     query = """

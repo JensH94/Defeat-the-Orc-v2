@@ -7,6 +7,7 @@ from database import (
     get_spells_for_classes,
     get_effects_for_skills,
     get_effects_for_spells,
+    get_weapon,
 )
 
 
@@ -21,6 +22,9 @@ def build_classes(classes_data, connection):
             "magic_resistance": zeile["magic_resistance"],
         }
         entity.entity_id = zeile["class_id"]
+        weapon_id = zeile["default_weapon_id"]
+        weapon_data = get_weapon(connection, weapon_id)[0]
+        entity.weapon = Weapon(weapon_data)
         skills_data = get_skills_for_classes(connection, entity.entity_id)
         spells_data = get_spells_for_classes(connection, entity.entity_id)
         entity.entity_skills = build_skills(skills_data, connection)

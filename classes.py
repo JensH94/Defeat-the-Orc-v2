@@ -25,6 +25,7 @@ class Entity:
         self.entity_skills: list = []
         self.death_reported: bool = False
         self.base_stats: dict = {}
+        self.weapon : Weapon | None = None
 
     def tick_effects(self):
         effect_events = []
@@ -116,6 +117,8 @@ class Weapon:
         self.max_damage: int = daten.get("max_damage", 0)
         self.crit_chance: float = daten.get("crit_chance", 0.0)
         self.hit_chance: float = daten.get("hit_chance", 0.0)
+        self.scaling_stat: str = daten["scaling_stat"]
+        self.scaling_factor: int = daten["scaling_factor"]
 
     def __repr__(self):
         return f"Weapon ({self.name} | min damage:{self.min_damage} | max damage:{self.max_damage} | crit chance:{self.crit_chance} | hit chance:{self.hit_chance})"

@@ -23,7 +23,9 @@ CREATE TABLE classes (
     strength            INTEGER NOT NULL CHECK (strength >= 0),
     intelligence        INTEGER NOT NULL CHECK (intelligence >= 0),
     armor               INTEGER NOT NULL CHECK (armor >= 0),
-    magic_resistance    INTEGER NOT NULL CHECK (magic_resistance >= 0)
+    magic_resistance    INTEGER NOT NULL CHECK (magic_resistance >= 0),
+    default_weapon_id   INTEGER NOT NULL,
+    FOREIGN KEY (default_weapon_id) REFERENCES weapons(weapon_id)
 );
 
 CREATE TABLE effects (
@@ -76,7 +78,9 @@ CREATE TABLE weapons (
     name       TEXT,
     min_damage INTEGER,
     max_damage INTEGER,
-    crit_chance INTEGER
+    crit_chance INTEGER,
+    scaling_stat TEXT NOT NULL CHECK (scaling_stat IN ('strength', 'intelligence')),
+    scaling_factor INTEGER NOT NULL CHECK (scaling_factor >= 0)
 );
 
 -- ---------- Verknüpfungstabellen (mit FKs) ----------
@@ -121,9 +125,13 @@ INSERT INTO armor (armor_id, name, defense) VALUES
 (1, 'Mage Cloth', 10),
 (2, 'Barbarian Leather', 17);
 
-INSERT INTO classes (class_id, name, base_health, base_initiative, base_resource, resource_type, max_resource, strength, intelligence, armor, magic_resistance) VALUES
-(1, 'Mage', 20, 15, 100, 'mana', 100, 3, 10, 3, 8),
-(2, 'Barbarian', 30, 13, 0, 'rage', 100, 10, 3, 8, 3);
+INSERT INTO weapons (weapon_id, name, min_damage, max_damage, crit_chance, scaling_stat, scaling_factor) VALUES
+(1, 'Axe', 3, 10, 0, 'strength', 100),
+(2, 'Staff', 1, 6, 0, 'intelligence', 100);
+
+INSERT INTO classes (class_id, name, base_health, base_initiative, base_resource, resource_type, max_resource, strength, intelligence, armor, magic_resistance, default_weapon_id) VALUES
+(1, 'Mage', 20, 15, 100, 'mana', 100, 3, 10, 3, 8, 2),
+(2, 'Barbarian', 30, 13, 0, 'rage', 100, 10, 3, 8, 3, 1);
 
 INSERT INTO effects (effect_id, name, min_value, max_value, duration, effect_type, stat) VALUES
 (1, 'Fire', 2, 4, 3, 'tick', 'health'),
@@ -146,10 +154,6 @@ INSERT INTO skills (skill_id, name, min_damage, max_damage, resource_cost, targe
 INSERT INTO spells (spell_id, name, min_damage, max_damage, resource_cost, target_type) VALUES
 (1, 'Fireball', 3, 9, 12, 'hostile'),
 (2, 'Mage Armor', 0, 0, 10, 'self');
-
-INSERT INTO weapons (weapon_id, name, min_damage, max_damage, crit_chance) VALUES
-(1, 'Axe', 3, 10, 0),
-(2, 'Staff', 1, 6, 0);
 
 INSERT INTO class_skills (class_id, skill_id) VALUES
 (2, 1),
