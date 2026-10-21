@@ -61,7 +61,9 @@ CREATE TABLE skills (
     min_damage    INTEGER,
     max_damage    INTEGER,
     resource_cost INTEGER,
-    target_type TEXT NOT NULL CHECK (target_type IN ('self', 'hostile'))
+    target_type TEXT NOT NULL CHECK (target_type IN ('self', 'hostile')),
+    scaling_stat TEXT NOT NULL CHECK (scaling_stat IN ('strength', 'intelligence')),
+    scaling_factor INTEGER NOT NULL CHECK (scaling_factor >= 0)
 );
 
 CREATE TABLE spells (
@@ -70,7 +72,9 @@ CREATE TABLE spells (
     min_damage    INTEGER,
     max_damage    INTEGER,
     resource_cost INTEGER,
-    target_type TEXT NOT NULL CHECK (target_type IN ('self', 'hostile'))
+    target_type TEXT NOT NULL CHECK (target_type IN ('self', 'hostile')),
+    scaling_stat TEXT NOT NULL CHECK (scaling_stat IN ('strength', 'intelligence')),
+    scaling_factor INTEGER NOT NULL CHECK (scaling_factor >= 0)
 );
 
 CREATE TABLE weapons (
@@ -127,7 +131,7 @@ INSERT INTO armor (armor_id, name, defense) VALUES
 
 INSERT INTO weapons (weapon_id, name, min_damage, max_damage, crit_chance, scaling_stat, scaling_factor) VALUES
 (1, 'Axe', 3, 10, 0, 'strength', 100),
-(2, 'Staff', 1, 6, 0, 'intelligence', 100);
+(2, 'Staff', 1, 6, 0, 'strength', 100);
 
 INSERT INTO classes (class_id, name, base_health, base_initiative, base_resource, resource_type, max_resource, strength, intelligence, armor, magic_resistance, default_weapon_id) VALUES
 (1, 'Mage', 20, 15, 100, 'mana', 100, 3, 10, 3, 8, 2),
@@ -147,13 +151,13 @@ INSERT INTO items (item_id, name, min_damage, max_damage, min_heal, max_heal) VA
 (1, 'Small Bomb', 2, 6, 0, 0),
 (2, 'Small Health Potion', 0, 0, 2, 6);
 
-INSERT INTO skills (skill_id, name, min_damage, max_damage, resource_cost, target_type) VALUES
-(1, 'Wounding Strike', 2, 6, 10, 'hostile'),
-(2, 'Raging Roar', 0, 0, 15, 'self');
+INSERT INTO skills (skill_id, name, min_damage, max_damage, resource_cost, target_type, scaling_stat, scaling_factor) VALUES
+(1, 'Wounding Strike', 2, 6, 10, 'hostile', 'strength', 100),
+(2, 'Raging Roar', 0, 0, 15, 'self', 'strength', 0);
 
-INSERT INTO spells (spell_id, name, min_damage, max_damage, resource_cost, target_type) VALUES
-(1, 'Fireball', 3, 9, 12, 'hostile'),
-(2, 'Mage Armor', 0, 0, 10, 'self');
+INSERT INTO spells (spell_id, name, min_damage, max_damage, resource_cost, target_type, scaling_stat, scaling_factor) VALUES
+(1, 'Fireball', 3, 9, 12, 'hostile', 'intelligence', 100),
+(2, 'Mage Armor', 0, 0, 10, 'self', 'intelligence', 0);
 
 INSERT INTO class_skills (class_id, skill_id) VALUES
 (2, 1),

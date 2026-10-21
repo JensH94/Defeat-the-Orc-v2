@@ -248,6 +248,11 @@ class Fight:
             entity.unarmed_min_damage, entity.unarmed_max_damage
         )
 
+    def ability_damage(self, entity, ability):
+        base = self.dmg_calculation(ability.min_damage, ability.max_damage)
+        bonus = ability.scaling_bonus(entity)
+        return base + bonus
+
     def announce_fight(self):
         palyer_names = ",".join(entity.name for entity in self.player_group)
         enemy_names = ",".join(entity.name for entity in self.enemy_group)
@@ -328,9 +333,7 @@ class Fight:
                 if turn.action == Action.ATTACK:
                     damage = self.attack_damage(entity)
                 else:
-                    damage = self.dmg_calculation(
-                        turn.ability.min_damage, turn.ability.max_damage
-                    )
+                    damage = self.ability_damage(entity, turn.ability)
 
                 is_crit = self.roll_crit(entity)
                 outgoing = entity.stat_modifier_sum("outgoing_damage")

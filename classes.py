@@ -169,12 +169,17 @@ class Skill:
         self.resource_cost: int = daten.get("resource_cost", 0)
         self.effect_data: list[dict] = []
         self.target_type: str = daten["target_type"]
+        self.scaling_stat: str = daten["scaling_stat"]
+        self.scaling_factor: int = daten["scaling_factor"]
 
     def create_effects(self):
         effects = []
         for zeile in self.effect_data:
             effects.append(Effects(zeile))
         return effects
+
+    def scaling_bonus(self, entity):
+        return entity.get_stat(self.scaling_stat) * self.scaling_factor / 100
 
     def __repr__(self):
         return f"Skill ({self.name} | min damage:{self.min_damage} | max damage:{self.max_damage} | resource cost:{self.resource_cost})"
@@ -190,12 +195,17 @@ class Spell:
         self.resource_cost: int = daten.get("resource_cost", 0)
         self.effect_data: list[dict] = []
         self.target_type: str = daten["target_type"]
+        self.scaling_stat: str = daten["scaling_stat"]
+        self.scaling_factor: int = daten["scaling_factor"]
 
     def create_effects(self):
         effects = []
         for zeile in self.effect_data:
             effects.append(Effects(zeile))
         return effects
+
+    def scaling_bonus(self, entity):
+        return entity.get_stat(self.scaling_stat) * self.scaling_factor / 100
 
     def __repr__(self):
         return f"Spell ({self.name} | min damage:{self.min_damage} | max damage:{self.max_damage} | resource cost:{self.resource_cost})"
