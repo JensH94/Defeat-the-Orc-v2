@@ -44,12 +44,14 @@ def roll_range(value_range):
     low, high = value_range
     return random.uniform(low, high)
 
+
 def calculate_damage(damage, outgoing_mod=0, incoming_mod=0, is_crit=False):
-    damage = damage * (1+outgoing_mod/100)
+    damage = damage * (1 + outgoing_mod / 100)
     if is_crit:
         damage = damage * CRIT_HIT_FACTOR
-    damage = damage * (1 + incoming_mod/100)
+    damage = damage * (1 + incoming_mod / 100)
     return round(damage)
+
 
 class Fight:
     def __init__(self, player_group, enemy_group):
@@ -235,6 +237,17 @@ class Fight:
     def dmg_calculation(self, min_damage, max_damage) -> int:
         return random.randint(min_damage, max_damage)
 
+    def attack_damage(self, entity):
+        if entity.weapon:
+            base = self.dmg_calculation(
+                entity.weapon.min_damage, entity.weapon.max_damage
+            )
+            bonus = entity.weapon.scaling_bonus(entity)
+            return base + bonus
+        return self.dmg_calculation(
+            entity.unarmed_min_damage, entity.unarmed_max_damage
+        )
+
     def announce_fight(self):
         palyer_names = ",".join(entity.name for entity in self.player_group)
         enemy_names = ",".join(entity.name for entity in self.enemy_group)
@@ -313,9 +326,7 @@ class Fight:
                     slow_print(f"{entity.name} misses {turn.target.name}")
                     continue
                 if turn.action == Action.ATTACK:
-                    damage = self.dmg_calculation(
-                        entity.unarmed_min_damage, entity.unarmed_max_damage
-                    )
+                    damage = self.attack_damage(entity)
                 else:
                     damage = self.dmg_calculation(
                         turn.ability.min_damage, turn.ability.max_damage
