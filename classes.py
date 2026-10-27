@@ -108,7 +108,11 @@ class Item:
         return f"Item ({self.name} | min damage: {self.min_damage} | max damage:{self.max_damage} | min heal:{self.min_heal} | max heal:{self.max_heal})"
 
 
-class Weapon:
+class DamageScaling:
+    def scaling_bonus(self, entity):
+        return entity.get_stat(self.scaling_stat) * self.scaling_factor / 100
+
+class Weapon(DamageScaling):
 
     def __init__(self, daten: dict):
         self.weapon_id: int = daten.get("weapon_id", 0)
@@ -119,9 +123,6 @@ class Weapon:
         self.hit_chance: float = daten.get("hit_chance", 0.0)
         self.scaling_stat: str = daten["scaling_stat"]
         self.scaling_factor: int = daten["scaling_factor"]
-
-    def scaling_bonus(self, entity):
-        return entity.get_stat(self.scaling_stat) * self.scaling_factor / 100
 
     def __repr__(self):
         return f"Weapon ({self.name} | min damage:{self.min_damage} | max damage:{self.max_damage} | crit chance:{self.crit_chance} | hit chance:{self.hit_chance})"
@@ -156,10 +157,10 @@ class Effects:
         return effects_dmg
 
     def __repr__(self):
-        return f"Effect ({self.name} | min damage:{self.min_damage} | max damage:{self.max_damage} | effect chance:{self.effect_chance})"
+        return f"Effect ({self.name} | min damage:{self.min_value} | max damage:{self.max_value} | effect chance:{self.effect_chance})"
 
 
-class Skill:
+class Skill(DamageScaling):
 
     def __init__(self, daten: dict):
         self.skill_id: int = daten.get("skill_id", 0)
@@ -178,14 +179,11 @@ class Skill:
             effects.append(Effects(zeile))
         return effects
 
-    def scaling_bonus(self, entity):
-        return entity.get_stat(self.scaling_stat) * self.scaling_factor / 100
-
     def __repr__(self):
         return f"Skill ({self.name} | min damage:{self.min_damage} | max damage:{self.max_damage} | resource cost:{self.resource_cost})"
 
 
-class Spell:
+class Spell(DamageScaling):
 
     def __init__(self, daten: dict):
         self.spell_id: int = daten.get("spell_id", 0)
@@ -203,9 +201,6 @@ class Spell:
         for zeile in self.effect_data:
             effects.append(Effects(zeile))
         return effects
-
-    def scaling_bonus(self, entity):
-        return entity.get_stat(self.scaling_stat) * self.scaling_factor / 100
 
     def __repr__(self):
         return f"Spell ({self.name} | min damage:{self.min_damage} | max damage:{self.max_damage} | resource cost:{self.resource_cost})"
