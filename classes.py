@@ -112,6 +112,7 @@ class DamageScaling:
     def scaling_bonus(self, entity):
         return entity.get_stat(self.scaling_stat) * self.scaling_factor / 100
 
+
 class Weapon(DamageScaling):
 
     def __init__(self, daten: dict):
@@ -123,6 +124,7 @@ class Weapon(DamageScaling):
         self.hit_chance: float = daten.get("hit_chance", 0.0)
         self.scaling_stat: str = daten["scaling_stat"]
         self.scaling_factor: int = daten["scaling_factor"]
+        self.damage_type: str | None = daten.get("damage_type")
 
     def __repr__(self):
         return f"Weapon ({self.name} | min damage:{self.min_damage} | max damage:{self.max_damage} | crit chance:{self.crit_chance} | hit chance:{self.hit_chance})"
@@ -172,6 +174,7 @@ class Skill(DamageScaling):
         self.target_type: str = daten["target_type"]
         self.scaling_stat: str = daten["scaling_stat"]
         self.scaling_factor: int = daten["scaling_factor"]
+        self.damage_type: str | None = daten.get("damage_type")
 
     def create_effects(self):
         effects = []
@@ -195,6 +198,7 @@ class Spell(DamageScaling):
         self.target_type: str = daten["target_type"]
         self.scaling_stat: str = daten["scaling_stat"]
         self.scaling_factor: int = daten["scaling_factor"]
+        self.damage_type: str | None = daten.get("damage_type")
 
     def create_effects(self):
         effects = []

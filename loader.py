@@ -36,7 +36,14 @@ def build_classes(classes_data, connection):
 def build_enemies(enemies_data):
     enemies = []
     for zeile in enemies_data:
-        enemies.append(Entity(zeile))
+        entity = Entity(zeile)
+        entity.base_stats = {
+            "armor": zeile["armor"],
+            "magic_resistance": zeile["magic_resistance"],
+        }
+        enemies.append(entity)
+        print(entity.name, entity.get_stat("armor"))
+        print(entity.name, entity.get_stat("magic_resistance"))
     return enemies
 
 
@@ -59,6 +66,7 @@ def build_armor(armor_data):
     for zeile in armor_data:
         armor.append(Armor(zeile))
     return armor
+
 
 def build_skills(skills_data, connection):
     skills = []
@@ -88,6 +96,7 @@ def random_enemy_select(enemies_data):
     enemy_select_list = random.choices(enemies_data, k=random_enemy_count())
     return enemy_select_list
 
+
 def choose_player_class(character_classes):
     while True:
         slow_print(f"\nChoose a Class:\n")
@@ -96,12 +105,16 @@ def choose_player_class(character_classes):
         try:
             class_number = int(slow_input(f"\nWhich Class do you choose?\n"))
         except ValueError:
-            slow_print(f"Wrong number, please choose a number between 1 and {len(character_classes)}\n")
+            slow_print(
+                f"Wrong number, please choose a number between 1 and {len(character_classes)}\n"
+            )
             continue
         if 1 <= class_number <= len(character_classes):
-            return [character_classes[class_number -1]]
+            return [character_classes[class_number - 1]]
         else:
-            slow_print(f"Wrong number, please choose a number between 1 and {len(character_classes)}\n")
+            slow_print(
+                f"Wrong number, please choose a number between 1 and {len(character_classes)}\n"
+            )
 
 
 def load_all(connection):
