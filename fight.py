@@ -52,6 +52,9 @@ def calculate_damage(damage, outgoing_mod=0, incoming_mod=0, is_crit=False):
     damage = damage * (1 + incoming_mod / 100)
     return round(damage)
 
+def apply_reduction(damage, target, damage_type):
+    if damage_type == "physical":
+        
 
 class Fight:
     def __init__(self, player_group, enemy_group):
