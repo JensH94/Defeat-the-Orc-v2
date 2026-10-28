@@ -9,6 +9,7 @@ RAGE_HIT_FACTOR = 0.2
 RAGE_TICK_FACTOR = 0.1
 CRIT_HIT_FACTOR = 2
 MANA_REGEN_RANGE = (0.1, 0.15)
+REDUCTION_CAP = 60
 
 
 class Action(Enum):
@@ -54,7 +55,15 @@ def calculate_damage(damage, outgoing_mod=0, incoming_mod=0, is_crit=False):
 
 def apply_reduction(damage, target, damage_type):
     if damage_type == "physical":
-        
+        stat_name = "armor"
+    elif damage_type == "magical":
+        stat_name = "magic_resistance"
+    else:
+        return damage
+
+    reduction = target.get_stat(stat_name)
+    reduction = min(REDUCTION_CAP, reduction)
+    return round(damage * (1 - reduction / 100))
 
 class Fight:
     def __init__(self, player_group, enemy_group):
@@ -335,13 +344,16 @@ class Fight:
                     continue
                 if turn.action == Action.ATTACK:
                     damage = self.attack_damage(entity)
+                    damage_type = entity.weapon.damage_type if entity.weapon else "physical"
                 else:
                     damage = self.ability_damage(entity, turn.ability)
+                    damage_type = turn.ability.damage_type
 
                 is_crit = self.roll_crit(entity)
                 outgoing = entity.stat_modifier_sum("outgoing_damage")
                 incoming = turn.target.stat_modifier_sum("incoming_damage")
                 damage = calculate_damage(damage, outgoing, incoming, is_crit)
+                damage = apply_reduction(damage, turn.target, damage_type)
                 if is_crit:
                     slow_print(f"{entity.name} crits against {turn.target.name}")
 

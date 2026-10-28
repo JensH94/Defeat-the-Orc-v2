@@ -42,8 +42,6 @@ def build_enemies(enemies_data):
             "magic_resistance": zeile["magic_resistance"],
         }
         enemies.append(entity)
-        print(entity.name, entity.get_stat("armor"))
-        print(entity.name, entity.get_stat("magic_resistance"))
     return enemies
 
 
