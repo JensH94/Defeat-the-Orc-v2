@@ -12,20 +12,20 @@ M1: Erledigt
 - Klassen in Kampf bauen (Schaden würfeln etc.)
 - Testkampf mit minimalen Entities zum Laufen bekommen
 
-M2 (MVP): in Bearbeitung
+M2 (MVP) : Erledigt
 
 - Erste Umgebung, Räume, Umsehen
 - Zufällige Gegnerbegegnungen
-- Buffs/Debuffs
-- Simple Gegner-KI
+- Simple Gegner-KI(nur Angriff)
 - Skills/Spells Grundgerüst
+- Buffs/Debuffs Grundgerüst
 
-M2.5:
+M2.5: in Bearbeitung
 
 - Minimale Stats (offensiv/defensiv)
 - Ausrüstung Grundgerüst (feste Startausrüstung)
-- Gegner-Fähigkeit + KI, die sie nutzt
-- Stat-Modifier-Debuff
+- Gegner-Fähigkeit + KI, die sie nutzt(Angriff + Fähigkeiten)
+- Buffs/Debuffs(Modifier-System integration + Stat-Modifier-Debuff)
 
 M3:
 

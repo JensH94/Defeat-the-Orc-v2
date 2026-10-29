@@ -47,10 +47,14 @@ Tech-Debt:
 - try/int(input)/range-check → Helper-Funktion
 - Prints "Verbindung hergestellt/getrennt" aus dem Spielerterminal
 - base*health/base_initiative/base_resource tragen in der DB base*-Präfix, neue Stat-Spalten (strength/intelligence/armor/magic*res) nicht. DB kennt nur Grundwerte, base* ist dort überflüssig. Bei nächstem Schema-Rename angleichen (base\_ aus DB-Spalten raus).
+- entity.entity_skills etc., 2 mal entity, rename nötig.
 
 ## Schaden / Struktur:
 
 - Schadensberechnung an 2 Orten: effects_apply (classes.py, Tick zieht selbst HP ab) und calculate_damage (fight.py, Angriff). Zu zentraler Pipeline in Fight zusammenlegen, sobald Ticks stat-skalieren oder durch Resistenz müssen.
+- Scaling-Form flat vs. %. Später festlegen, eine Stelle zum ändern.
+- Rundung an 2 stellen -> nur an einer Stelle.
+- Buff/Schaden-Trennung, primär Code (nicht zwingend DB). Refactor beim Modifier-System (Equipment) ODER Heilung — erster der beiden.
 
 ## Effekte / Dauer:
 
