@@ -65,6 +65,15 @@ def get_effects_for_spells(connection, spell_id):
             """
     return fetch_all(connection, query, (spell_id,))
 
+def get_skills_for_enemies(connection, enemy_id):
+    query = """
+            SELECT skills.*
+            FROM enemy_skills
+            JOIN skills ON enemy_skills.skill_id = skills.skill_id
+            WHERE enemy_skills.enemy_id = ?
+            """
+    return fetch_all(connection, query, (enemy_id,))
+
 
 def disconnect(connection):
     connection.close()

@@ -8,6 +8,7 @@ from database import (
     get_effects_for_skills,
     get_effects_for_spells,
     get_weapon,
+    get_skills_for_enemies,
 )
 
 
@@ -33,10 +34,13 @@ def build_classes(classes_data, connection):
     return character_classes
 
 
-def build_enemies(enemies_data):
+def build_enemies(enemies_data, connection):
     enemies = []
     for zeile in enemies_data:
         entity = Entity(zeile)
+        entity.entity_id = zeile["enemy_id"]
+        skills_data = get_skills_for_enemies(connection, entity.entity_id)
+        entity.entity_skills = build_skills(skills_data, connection)
         entity.base_stats = {
             "armor": zeile["armor"],
             "magic_resistance": zeile["magic_resistance"],

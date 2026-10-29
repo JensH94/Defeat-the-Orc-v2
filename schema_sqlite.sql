@@ -128,6 +128,14 @@ CREATE TABLE spell_effects (
     FOREIGN KEY (effect_id) REFERENCES effects(effect_id)
 );
 
+CREATE TABLE enemy_skills (
+    enemy_id INTEGER,
+    skill_id INTEGER,
+    PRIMARY KEY (enemy_id, skill_id),
+    FOREIGN KEY (enemy_id) REFERENCES enemies(enemy_id),
+    FOREIGN KEY (skill_id) REFERENCES skills(skill_id)
+);
+
 -- ---------- Daten ----------
 
 INSERT INTO armor (armor_id, name, defense) VALUES
@@ -158,7 +166,9 @@ INSERT INTO items (item_id, name, min_damage, max_damage, min_heal, max_heal) VA
 
 INSERT INTO skills (skill_id, name, min_damage, max_damage, resource_cost, target_type, scaling_stat, scaling_factor, damage_type) VALUES
 (1, 'Wounding Strike', 2, 6, 10, 'hostile', 'strength', 100, 'physical'),
-(2, 'Raging Roar', 0, 0, 15, 'self', 'strength', 0, NULL);
+(2, 'Raging Roar', 0, 0, 15, 'self', 'strength', 0, NULL),
+(3, 'Slime Ball', 2, 6, 0, 'hostile', 'strength', 0, 'physical'),
+(4, 'Bite', 3, 6, 0, 'hostile','strength', 0, 'physical');
 
 INSERT INTO spells (spell_id, name, min_damage, max_damage, resource_cost, target_type, scaling_stat, scaling_factor, damage_type) VALUES
 (1, 'Fireball', 3, 9, 12, 'hostile', 'intelligence', 100, 'magical'),
@@ -179,3 +189,7 @@ INSERT INTO skill_effects (skill_id, effect_id, effect_chance) VALUES
 INSERT INTO spell_effects (spell_id, effect_id, effect_chance) VALUES
 (1, 1, 30),
 (2, 4, 100);
+
+INSERT INTO enemy_skills (enemy_id, skill_id) VALUES
+(1, 4),
+(2, 3);
