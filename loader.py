@@ -12,6 +12,17 @@ from database import (
 )
 
 
+def build_lookup(rows, key):
+    return {row[key]: row for row in rows}
+
+
+def build_mapping(rows, key_col):
+    mapping = {}
+    for row in rows:
+        mapping.setdefault(row[key_col], []).append(row)
+    return mapping
+
+
 def build_classes(classes_data, connection):
     character_classes = []
     for zeile in classes_data:
@@ -132,11 +143,38 @@ def load_all(connection):
     weapons = build_weapons(weapons_data)
     armor = build_armor(armor_data)
 
+    skills_by_id = build_lookup(get_data(connection, "skills"), "skill_id")
+    spells_by_id = build_lookup(get_data(connection, "spells"), "spell_id")
+    effects_by_id = build_lookup(get_data(connection, "effects"), "effect_id")
+    weapons_by_id = build_lookup(get_data(connection, "weapons"), "weapon_id")
+
+    enemy_skills_map = build_mapping(get_data(connection, "enemy_skills"), "enemy_id")
+    class_skills_map = build_mapping(get_data(connection, "class_skills"), "class_id")
+    class_spells_map = build_mapping(get_data(connection, "class_spells"), "class_id")
+    skill_effects_map = build_mapping(get_data(connection, "skill_effects"), "skill_id")
+    spell_effects_map = build_mapping(get_data(connection, "spell_effects"), "spell_id")
+
+    registry = {
+        "skills_by_id": skills_by_id,
+        "spells_by_id": spells_by_id,
+        "effects_by_id": effects_by_id,
+        "weapons_by_id": weapons_by_id,
+        "enemy_skills_map": enemy_skills_map,
+        "class_skills_map": class_skills_map,
+        "class_spells_map": class_spells_map,
+        "skill_effects_map": skill_effects_map,
+        "spell_effects_map": spell_effects_map,
+    }
+
     data_all = {
         "classes": character_classes,
         "items": items,
         "weapons": weapons,
         "armor": armor,
         "enemies_data": enemies_data,
+        "registry": registry,
     }
-    return data_all
+
+    print(skill_effects_map)
+
+    return data_all, registry
