@@ -1,3 +1,4 @@
+from __future__ import annotations
 import sqlite3
 
 
@@ -18,6 +19,7 @@ def fetch_all(connection, query, params=None):
 def get_data(connection, tabelle):
     query = f"SELECT * FROM {tabelle}"
     return fetch_all(connection, query)
+
 
 def get_weapon(connection, weapon_id):
     query = """
@@ -64,6 +66,7 @@ def get_effects_for_spells(connection, spell_id):
             WHERE spell_effects.spell_id = ?
             """
     return fetch_all(connection, query, (spell_id,))
+
 
 def get_skills_for_enemies(connection, enemy_id):
     query = """

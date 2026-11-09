@@ -1,3 +1,4 @@
+from __future__ import annotations
 from print_style import slow_print, slow_input
 from fight import Fight, FightResult, roll_chance
 from loader import random_enemy_select, build_enemies
@@ -26,7 +27,7 @@ class Environment:
 
     def room_description(self):
         room = self.rooms[self.current_room]
-        slow_print(f"{room["description"]}")
+        slow_print(f"{room['description']}")
 
     def room_directions(self):
         room = self.rooms[self.current_room]

@@ -1,3 +1,4 @@
+from __future__ import annotations
 from database import disconnect, verbinden
 from loader import load_all, choose_player_class
 from environment import Environment, ExploreResult

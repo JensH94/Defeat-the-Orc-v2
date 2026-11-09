@@ -1,8 +1,8 @@
+from __future__ import annotations
 import random
 
 
 class Entity:
-
     def __init__(self, daten: dict):
         self.entity_id: int = 0
         self.name: str = daten.get("name", "Unbekannt")
@@ -95,7 +95,6 @@ class Entity:
 
 
 class Item:
-
     def __init__(self, daten: dict):
         self.item_id: int = daten.get("item_id", 0)
         self.name: str = daten.get("name", "unbekannt")
@@ -114,7 +113,6 @@ class DamageScaling:
 
 
 class Weapon(DamageScaling):
-
     def __init__(self, daten: dict):
         self.weapon_id: int = daten.get("weapon_id", 0)
         self.name: str = daten.get("name", "unbekannt")
@@ -131,7 +129,6 @@ class Weapon(DamageScaling):
 
 
 class Armor:
-
     def __init__(self, daten: dict):
         self.armor_id: int = daten.get("armor_id", 0)
         self.name: str = daten.get("name", "unbekannt")
@@ -142,7 +139,6 @@ class Armor:
 
 
 class Effects:
-
     def __init__(self, daten: dict):
         self.effect_id: int = daten.get("effect_id", 0)
         self.name: str = daten.get("name", "unbekannt")
@@ -163,7 +159,6 @@ class Effects:
 
 
 class Skill(DamageScaling):
-
     def __init__(self, daten: dict):
         self.skill_id: int = daten.get("skill_id", 0)
         self.name: str = daten.get("name", "unbekannt")
@@ -187,7 +182,6 @@ class Skill(DamageScaling):
 
 
 class Spell(DamageScaling):
-
     def __init__(self, daten: dict):
         self.spell_id: int = daten.get("spell_id", 0)
         self.name: str = daten.get("name", "unbekannt")

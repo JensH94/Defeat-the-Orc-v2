@@ -1,3 +1,4 @@
+from __future__ import annotations
 from classes import Entity, Item, Weapon, Armor, Skill, Spell
 import random
 from print_style import slow_print, slow_input

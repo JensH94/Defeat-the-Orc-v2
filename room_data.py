@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 forest = {
     "room_1": {
         "name": "Forest Edge",

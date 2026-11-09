@@ -1,3 +1,4 @@
+from __future__ import annotations
 import random
 from classes import Entity, Skill, Spell
 from print_style import slow_print, slow_input
@@ -53,6 +54,7 @@ def calculate_damage(damage, outgoing_mod=0, incoming_mod=0, is_crit=False):
     damage = damage * (1 + incoming_mod / 100)
     return round(damage)
 
+
 def apply_reduction(damage, target, damage_type):
     if damage_type == "physical":
         stat_name = "armor"
@@ -64,6 +66,7 @@ def apply_reduction(damage, target, damage_type):
     reduction = target.get_stat(stat_name)
     reduction = min(REDUCTION_CAP, reduction)
     return round(damage * (1 - reduction / 100))
+
 
 class Fight:
     def __init__(self, player_group, enemy_group):
@@ -164,7 +167,6 @@ class Fight:
         while True:
             slow_print(f" Choose an ability\n")
             for index, ability in enumerate(ability_list, start=1):
-
                 slow_print(f" {index} - {ability.name}")
 
             slow_print("0 - Back")
@@ -314,7 +316,6 @@ class Fight:
         while self.health_check(self.player_group) and self.health_check(
             self.enemy_group
         ):
-
             slow_print(f"\n-- Round: {self.rounds} --\n")
 
             for entity in self.turn_order:
@@ -344,7 +345,9 @@ class Fight:
                     continue
                 if turn.action == Action.ATTACK:
                     damage = self.attack_damage(entity)
-                    damage_type = entity.weapon.damage_type if entity.weapon else "physical"
+                    damage_type = (
+                        entity.weapon.damage_type if entity.weapon else "physical"
+                    )
                 else:
                     damage = self.ability_damage(entity, turn.ability)
                     damage_type = turn.ability.damage_type
