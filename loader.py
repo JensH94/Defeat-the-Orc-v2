@@ -1,13 +1,11 @@
 from __future__ import annotations
-from classes import Entity, Item, Weapon, Armor, Skill, Spell
+from classes import Entity, Weapon, Skill, Spell
 import random
 from print_style import slow_print, slow_input
 from database import (
     get_data,
     get_skills_for_classes,
     get_spells_for_classes,
-    get_effects_for_skills,
-    get_effects_for_spells,
     get_weapon,
     get_skills_for_enemies,
 )
@@ -61,43 +59,32 @@ def build_enemies(enemies_data, connection):
     return enemies
 
 
-def build_items(items_data):
-    items = []
-    for zeile in items_data:
-        items.append(Item(zeile))
-    return items
-
-
-def build_weapons(weapons_data):
-    weapons = []
-    for zeile in weapons_data:
-        weapons.append(Weapon(zeile))
-    return weapons
-
-
-def build_armor(armor_data):
-    armor = []
-    for zeile in armor_data:
-        armor.append(Armor(zeile))
-    return armor
-
-
-def build_skills(skills_data, connection):
+def build_skills(skills_data, registry):
+    effects_by_id = registry["effects_by_id"]
+    skill_effects_map = registry["skill_effects_map"]
     skills = []
     for zeile in skills_data:
         skill = Skill(zeile)
-        effects_data = get_effects_for_skills(connection, skill.skill_id)
-        skill.effect_data = effects_data
+        junction_rows = skill_effects_map.get(skill.skill_id, [])
+        skill.effect_data = [
+            {**effects_by_id[row["effect_id"]], "effect_chance": row["effect_chance"]}
+            for row in junction_rows
+        ]
         skills.append(skill)
     return skills
 
 
-def build_spells(spells_data, connection):
+def build_spells(spells_data, registry):
+    effects_by_id = registry["effects_by_id"]
+    spell_effects_map = registry["spell_effects_map"]
     spells = []
     for zeile in spells_data:
         spell = Spell(zeile)
-        effects_data = get_effects_for_spells(connection, spell.spell_id)
-        spell.effect_data = effects_data
+        junction_rows = spell_effects_map.get(spell.spell_id, [])
+        spell.effect_data = [
+            {**effects_by_id[row["effect_id"]], "effect_chance": row["effect_chance"]}
+            for row in junction_rows
+        ]
         spells.append(spell)
     return spells
 
@@ -113,11 +100,11 @@ def random_enemy_select(enemies_data):
 
 def choose_player_class(character_classes):
     while True:
-        slow_print(f"\nChoose a Class:\n")
+        slow_print("\nChoose a Class:\n")
         for index, entity in enumerate(character_classes, start=1):
             slow_print(f"{index} - {entity.name}")
         try:
-            class_number = int(slow_input(f"\nWhich Class do you choose?\n"))
+            class_number = int(slow_input("\nWhich Class do you choose?\n"))
         except ValueError:
             slow_print(
                 f"Wrong number, please choose a number between 1 and {len(character_classes)}\n"
@@ -135,14 +122,8 @@ def load_all(connection):
 
     classes_data = get_data(connection, "classes")
     enemies_data = get_data(connection, "enemies")
-    items_data = get_data(connection, "items")
-    weapons_data = get_data(connection, "weapons")
-    armor_data = get_data(connection, "armor")
 
     character_classes = build_classes(classes_data, connection)
-    items = build_items(items_data)
-    weapons = build_weapons(weapons_data)
-    armor = build_armor(armor_data)
 
     skills_by_id = build_lookup(get_data(connection, "skills"), "skill_id")
     spells_by_id = build_lookup(get_data(connection, "spells"), "spell_id")
@@ -169,13 +150,8 @@ def load_all(connection):
 
     data_all = {
         "classes": character_classes,
-        "items": items,
-        "weapons": weapons,
-        "armor": armor,
         "enemies_data": enemies_data,
         "registry": registry,
     }
 
-    print(skill_effects_map)
-
-    return data_all, registry
+    return data_all

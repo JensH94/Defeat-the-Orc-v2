@@ -165,7 +165,7 @@ class Fight:
 
     def choose_ability(self, ability_list, entity) -> Skill | Spell | None:
         while True:
-            slow_print(f" Choose an ability\n")
+            slow_print(" Choose an ability\n")
             for index, ability in enumerate(ability_list, start=1):
                 slow_print(f" {index} - {ability.name}")
 
@@ -297,17 +297,6 @@ class Fight:
         if self.health_check(self.player_group):
             return FightResult.VICTORY
         return FightResult.DEFEAT
-
-    def expire_modifiers(self):
-        expired = []
-        for effect in self.entity_effects:
-            if effect.effect_type != "stat_modifier":
-                continue
-            effect.effects_duration -= 1
-            if effect.effects_duration <= 0:
-                expired.append(effect.name)
-        self.entity_effects = [e for e in self.entity_effects if e.effects_duration > 0]
-        return expired
 
     def fight_loop(self) -> FightResult:
 
