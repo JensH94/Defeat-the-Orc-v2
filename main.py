@@ -13,7 +13,9 @@ every_data = load_all(connection)
 disconnect(connection)
 
 player_group = choose_player_class(every_data["classes"])
-environment = Environment(forest, player_group, every_data["enemies_data"])
+environment = Environment(
+    forest, player_group, every_data["enemies_data"], every_data["registry"]
+)
 result = environment.exploring_menu()
 if result == ExploreResult.GAME_OVER:
     slow_print("Game Over")

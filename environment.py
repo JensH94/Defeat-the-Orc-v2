@@ -17,12 +17,13 @@ class ExploreResult(Enum):
 
 
 class Environment:
-    def __init__(self, rooms, player_group, enemies_data):
+    def __init__(self, rooms, player_group, enemies_data, registry):
         self.rooms: dict = rooms
         self.player_group: list = player_group
         self.enemies_data: list = enemies_data
         self.current_room: str = "room_1"
         self.encounter_rooms: set = set()
+        self.registry = registry
         self.roll_encounter_rooms()
 
     def room_description(self):
@@ -124,7 +125,7 @@ class Environment:
 
     def start_encounter(self):
         select_enemy = random_enemy_select(self.enemies_data)
-        enemy_group = build_enemies(select_enemy)
+        enemy_group = build_enemies(select_enemy, self.registry)
         fight_start = Fight(self.player_group, enemy_group)
         return fight_start.fight_loop()
 

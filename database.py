@@ -21,63 +21,6 @@ def get_data(connection, tabelle):
     return fetch_all(connection, query)
 
 
-def get_weapon(connection, weapon_id):
-    query = """
-            SELECT * FROM weapons WHERE weapon_id = ?
-            """
-    return fetch_all(connection, query, (weapon_id,))
-
-
-def get_skills_for_classes(connection, class_id):
-    query = """
-            SELECT skills.*
-            FROM class_skills
-            JOIN skills ON class_skills.skill_id = skills.skill_id
-            WHERE class_skills.class_id = ?
-            """
-    return fetch_all(connection, query, (class_id,))
-
-
-def get_spells_for_classes(connection, class_id):
-    query = """
-            SELECT spells.*
-            FROM class_spells
-            JOIN spells ON class_spells.spell_id = spells.spell_id
-            WHERE class_spells.class_id = ?
-            """
-    return fetch_all(connection, query, (class_id,))
-
-
-def get_effects_for_skills(connection, skill_id):
-    query = """
-            SELECT effects.*, skill_effects.effect_chance
-            FROM skill_effects
-            JOIN effects ON skill_effects.effect_id = effects.effect_id
-            WHERE skill_effects.skill_id = ?
-            """
-    return fetch_all(connection, query, (skill_id,))
-
-
-def get_effects_for_spells(connection, spell_id):
-    query = """
-            SELECT effects.*, spell_effects.effect_chance
-            FROM spell_effects
-            JOIN effects ON spell_effects.effect_id = effects.effect_id
-            WHERE spell_effects.spell_id = ?
-            """
-    return fetch_all(connection, query, (spell_id,))
-
-
-def get_skills_for_enemies(connection, enemy_id):
-    query = """
-            SELECT skills.*
-            FROM enemy_skills
-            JOIN skills ON enemy_skills.skill_id = skills.skill_id
-            WHERE enemy_skills.enemy_id = ?
-            """
-    return fetch_all(connection, query, (enemy_id,))
-
-
 def disconnect(connection):
     connection.close()
     print("Verbindung getrennt")

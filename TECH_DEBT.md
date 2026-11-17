@@ -28,6 +28,7 @@ Tech-Debt:
 - palyer_names → player_names (announce_fight)
 - resource_spending (classes.py) kein Schutz gegen negativ (aktuell sicher)
 - enemy_choice/player_choice setzen nicht-leere Zielgruppe voraus (aktuell sicher)
+- environment kriegt jetzt enemies_data und registry (zwei Kanäle). Man könnte enemies_data als enemies_by_id-Lookup in die Registry ziehen → ein Kanal.
 
 ## main.py
 
@@ -41,7 +42,6 @@ Tech-Debt:
 - Pflichtfelder in Konstruktoren auf daten["key"] statt .get(...,0) (mit Härtung)
 - Type Hints: Hit/Crit als int statt float (Entity.base_crit_chance, base_hit_chance, Weapon.crit_chance)
 - Weapon.hit_chance: Attribut ohne DB-Spalte, Default 0.0 → entfernen oder kommentieren
-- **repr** Dauerdebt (für Tests umgeschrieben)
 - environment directions umbenennen
 - .gitattributes fehlt (CRLF/LF-Warnung)
 - try/int(input)/range-check → Helper-Funktion

@@ -4,10 +4,6 @@ import random
 from print_style import slow_print, slow_input
 from database import (
     get_data,
-    get_skills_for_classes,
-    get_spells_for_classes,
-    get_weapon,
-    get_skills_for_enemies,
 )
 
 
@@ -22,7 +18,12 @@ def build_mapping(rows, key_col):
     return mapping
 
 
-def build_classes(classes_data, connection):
+def build_classes(classes_data, registry):
+    weapons_by_id = registry["weapons_by_id"]
+    class_skills_map = registry["class_skills_map"]
+    class_spells_map = registry["class_spells_map"]
+    skills_by_id = registry["skills_by_id"]
+    spells_by_id = registry["spells_by_id"]
     character_classes = []
     for zeile in classes_data:
         entity = Entity(zeile)
@@ -34,23 +35,28 @@ def build_classes(classes_data, connection):
         }
         entity.entity_id = zeile["class_id"]
         weapon_id = zeile["default_weapon_id"]
-        weapon_data = get_weapon(connection, weapon_id)[0]
+        weapon_data = weapons_by_id[weapon_id]
         entity.weapon = Weapon(weapon_data)
-        skills_data = get_skills_for_classes(connection, entity.entity_id)
-        spells_data = get_spells_for_classes(connection, entity.entity_id)
-        entity.entity_skills = build_skills(skills_data, connection)
-        entity.entity_spells = build_spells(spells_data, connection)
+        skill_rows = class_skills_map.get(entity.entity_id, [])
+        skills_data = [skills_by_id[row["skill_id"]] for row in skill_rows]
+        entity.entity_skills = build_skills(skills_data, registry)
+        spells_rows = class_spells_map.get(entity.entity_id, [])
+        spells_data = [spells_by_id[row["spell_id"]] for row in spells_rows]
+        entity.entity_spells = build_spells(spells_data, registry)
         character_classes.append(entity)
     return character_classes
 
 
-def build_enemies(enemies_data, connection):
+def build_enemies(enemies_data, registry):
+    enemy_skills_map = registry["enemy_skills_map"]
+    skills_by_id = registry["skills_by_id"]
     enemies = []
     for zeile in enemies_data:
         entity = Entity(zeile)
         entity.entity_id = zeile["enemy_id"]
-        skills_data = get_skills_for_enemies(connection, entity.entity_id)
-        entity.entity_skills = build_skills(skills_data, connection)
+        junction_rows = enemy_skills_map.get(entity.entity_id, [])
+        skills_data = [skills_by_id[row["skill_id"]] for row in junction_rows]
+        entity.entity_skills = build_skills(skills_data, registry)
         entity.base_stats = {
             "armor": zeile["armor"],
             "magic_resistance": zeile["magic_resistance"],
@@ -123,8 +129,6 @@ def load_all(connection):
     classes_data = get_data(connection, "classes")
     enemies_data = get_data(connection, "enemies")
 
-    character_classes = build_classes(classes_data, connection)
-
     skills_by_id = build_lookup(get_data(connection, "skills"), "skill_id")
     spells_by_id = build_lookup(get_data(connection, "spells"), "spell_id")
     effects_by_id = build_lookup(get_data(connection, "effects"), "effect_id")
@@ -147,6 +151,8 @@ def load_all(connection):
         "skill_effects_map": skill_effects_map,
         "spell_effects_map": spell_effects_map,
     }
+
+    character_classes = build_classes(classes_data, registry)
 
     data_all = {
         "classes": character_classes,
